@@ -1,0 +1,24 @@
+.footer {
+    background-color: #343a40;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer p {
+    margin: 5px 0;
+}
+
+.social-icons {
+    margin-top: 15px;
+}
+
+.icon {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.icon:hover {
+    color: rgb(253, 107, 107);
+}

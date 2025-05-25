@@ -1,0 +1,16 @@
+.carrito-vacio {
+    margin-top: 20px;
+    padding: 20px;
+    font-size: larger;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: rgb(21, 131, 54);
+    border: 2px solid white;
+    border-radius: 150px;
+}
+
+.carrito-vacio:hover {
+    background-color: #e0ffe0;
+    color: #006400;
+    cursor: pointer;
+}
