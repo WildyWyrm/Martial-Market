@@ -1,4 +1,4 @@
-/* import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "../styles/Productos.css";
 import { dispararSweetBasico } from "../assets/SweetAlert";
@@ -59,4 +59,4 @@ function ProductosContainer1({ functionCarrito }) {
     }
 }
 
-export default ProductosContainer1 */
+export default ProductosContainer1

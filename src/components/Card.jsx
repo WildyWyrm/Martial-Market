@@ -9,7 +9,7 @@ function Card({producto}){
         <div className="producto-card" >
             <h2 style={{color:"black"}}>{producto.name}</h2>
             <Link to={"/productos/"+ producto.id}><img className="producto-image" src={producto.image}></img></Link>
-            <p style={{color:"black"}}>${producto.price}</p>
+            <p style={{color:"black"}}>${producto.price} </p>
             <Link to={"/productos/" + producto.id} ><button style={{color:"black"}}>Ver detalles del producto</button></Link>
         </div>
     )

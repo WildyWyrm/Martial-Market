@@ -1,24 +1,21 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // <-- import useNavigate
 import "../styles/ProductoDetalle.css";
 import { dispararSweetBasico } from "../assets/SweetAlert";
 import { CarritoContext } from "../contexts/CarritoContext";
 
 function ProductoDetalle({}) {
-
-  const {agregarAlCarrito} = useContext(CarritoContext);
-
+  const { agregarAlCarrito } = useContext(CarritoContext);
   const { id } = useParams();
+  const navigate = useNavigate(); // <-- instancia
+
   const [producto, setProducto] = useState(null);
   const [cantidad, setCantidad] = useState(1);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log(id)
-
   useEffect(() => {
     fetch("https://682a8de1ab2b5004cb370219.mockapi.io/Productos")
-    /* https://68100d8b27f2fdac24101ef5.mockapi.io/productos */
       .then((res) => res.json())
       .then((datos) => {
         const productoEncontrado = datos.find((item) => item.id === id);
@@ -38,8 +35,17 @@ function ProductoDetalle({}) {
 
   function funcionCarrito() {
     if (cantidad < 1) return;
-    dispararSweetBasico("Producto Agregado", "El producto fue agregado al carrito con éxito", "success", "Cerrar");
+    dispararSweetBasico(
+      "Producto Agregado",
+      "El producto fue agregado al carrito con éxito",
+      "success",
+      "Cerrar"
+    );
     agregarAlCarrito({ ...producto, cantidad });
+  }
+
+  function seguirComprando() {
+    navigate("/productos"); // Navega a la página productos
   }
 
   function sumarContador() {
@@ -56,17 +62,23 @@ function ProductoDetalle({}) {
 
   return (
     <div className="detalle-container">
-<img className="detalle-imagen" src={producto.image} alt={producto.name} />
+      <img className="detalle-imagen" src={producto.image} alt={producto.name} />
 
       <div className="detalle-info">
         <h2>{producto.name}</h2>
         <p>{producto.descriptin}</p>
         <p>{producto.price} $</p>
-        <div className="detalle-contador">
+
+        <div className="detalle-contador" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <button onClick={restarContador}>-</button>
           <span>{cantidad}</span>
           <button onClick={sumarContador}>+</button>
+
+          <button onClick={seguirComprando} style={{ marginLeft: "20px" }}>
+            Seguir comprando
+          </button>
         </div>
+
         <button onClick={funcionCarrito}>Agregar al carrito</button>
       </div>
     </div>
