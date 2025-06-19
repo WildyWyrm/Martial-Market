@@ -1,7 +1,5 @@
 import React, { createContext, useState } from 'react';
-// Crear el contexto
 export const CarritoContext = createContext();
-// Proveedor del contexto
 export function CarritoProvider({ children }) {
     const [productosCarrito, setProductosCarrito] = useState([]);
 
@@ -18,7 +16,6 @@ export function CarritoProvider({ children }) {
             })
             setProductosCarrito(carritoActualizado)
         }else{
-            // Si no existe, lo agregamos con su cantidad
             const nuevoCarrito = [...productosCarrito, producto];
             setProductosCarrito(nuevoCarrito)
         }

@@ -1,11 +1,13 @@
-import "../styles/Carrito.css"
+import "../styles/Carrito.css";
 import { useContext } from "react";
 import CarritoCard from "./CarritoCard.jsx";
 import { Navigate } from "react-router-dom";
 import { CarritoContext } from "../contexts/CarritoContext.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
-export default function Carrito({usuarioLogeado}) {
-    const {productosCarrito, vaciarCarrito, borrarProductoCarrito} = useContext(CarritoContext);
+export default function Carrito() {
+    const { user } = useAuth();
+    const { productosCarrito, vaciarCarrito, borrarProductoCarrito } = useContext(CarritoContext);
 
     const total = productosCarrito.reduce((subTotal, producto) => {
         const precioNumerico = Number(
@@ -14,15 +16,15 @@ export default function Carrito({usuarioLogeado}) {
         return subTotal + precioNumerico * producto.cantidad;
     }, 0);
 
-    function funcionDisparadora(id){
+    function funcionDisparadora(id) {
         borrarProductoCarrito(id);
     }
 
-    function funcionDisparadora2(){
+    function funcionDisparadora2() {
         vaciarCarrito();
     }
 
-    if(!usuarioLogeado){
+    if (!user) {
         return <Navigate to="/login" replace />;
     }
 
