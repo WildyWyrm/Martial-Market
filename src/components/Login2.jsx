@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";  // <-- importamos Link
 import { useAuth } from "../contexts/AuthContext";
+import "../styles/Login.css";
 
 function Login2() {
     const [email, setEmail] = useState("");
@@ -28,9 +29,9 @@ function Login2() {
     };
 
     return (
+        <div className="login-container">
         <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "auto" }}>
-            <h2>Iniciar sesión</h2>
-
+            <h2 className="login-title text-center mt-4">Iniciar sesión</h2>
             <div style={{ marginBottom: 12 }}>
                 <label>Email:</label><br />
                 <input
@@ -76,6 +77,7 @@ function Login2() {
                 ¿No tenés cuenta? <Link to="/signup">Registrate acá</Link>
             </p>
         </form>
+        </div>
     );
 }
 

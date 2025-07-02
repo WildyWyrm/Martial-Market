@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import "../styles/Signup.css";
 
 function Signup() {
     const [email, setEmail] = useState("");
@@ -20,8 +21,10 @@ function Signup() {
     };
 
     return (
+        <div className="signup-container">
         <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "auto" }}>
-            <h2>Registrarse</h2>
+            <h2 className="signup-title text-center mt-4">Registrarse</h2>
+
 
             <div style={{ marginBottom: 12 }}>
                 <label>Email:</label>
@@ -55,6 +58,7 @@ function Signup() {
                 Crear cuenta
             </button>
         </form>
+        </div>
     );
 }
 
