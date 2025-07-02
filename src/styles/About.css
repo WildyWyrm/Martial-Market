@@ -1,8 +1,8 @@
 .about-section {
-    padding: 20px;
-    max-width: 600px;
     margin: auto;
     text-align: center;
+    border-top: 1px solid white; 
+    padding-top: 1.5rem; 
 }
 
 .about-section p {
@@ -12,7 +12,7 @@
 .about-image {
     max-width: 100%;
     height: auto;
-    margin-top: 20px;
     border-radius: 8px;
 }
+
 

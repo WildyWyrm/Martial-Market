@@ -324,7 +324,7 @@ export default function Admin() {
                     ))}
 
                     {/* Paginación */}
-                    <Pagination className="justify-content-center mt-4">
+                    <Pagination className="justify-content-center mt-4 pb-4">
                         {Array.from({ length: totalPaginas }, (_, i) => (
                             <Pagination.Item
                                 key={i}

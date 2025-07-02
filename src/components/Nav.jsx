@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { CarritoContext } from '../contexts/CarritoContext';
 import { useAuth } from '../contexts/AuthContext';
+import "../styles/Nav.css";
 
 function NavBar() {
     const { productosCarrito } = useContext(CarritoContext);
@@ -21,8 +22,21 @@ function NavBar() {
     return (
         <Navbar bg="dark" variant="dark" expand="md" className="py-2">
             <Container>
-                <Navbar.Brand as={Link} to="/">MartialMarket</Navbar.Brand>
-                <Navbar.Toggle aria-controls="navContent" />
+                <Navbar.Brand as={Link} to="/">
+                    <img
+                        src="https://martialmarkets.netlify.app/imagenes/Martial%20Market.png"
+                        alt="Martial Market Logo"
+                        className="logo-navbar"
+                    />
+                </Navbar.Brand>
+
+                <div className="position-relative">
+                    <Navbar.Toggle aria-controls="navContent" />
+                    {productosCarrito.length > 0 && (
+                        <span className="hamburguesa-indicador"></span>
+                    )}
+                </div>
+
                 <Navbar.Collapse id="navContent">
                     <Nav className="mx-auto gap-3">
                         <Nav.Link as={Link} to="/">Inicio</Nav.Link>

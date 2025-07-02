@@ -1,0 +1,29 @@
+.logo-navbar {
+    height: 90px;
+    width: auto;
+    border-radius: 12px;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.logo-navbar:hover {
+    transform: scale(1.05);
+}
+
+.hamburguesa-indicador {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+/* Ocultar el punto en desktop */
+@media (min-width: 768px) {
+    .hamburguesa-indicador {
+        display: none;
+    }
+}
