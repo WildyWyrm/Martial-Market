@@ -14,3 +14,10 @@
 .signup-container {
     padding-bottom: 50px;
 }
+
+.signup-form {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}

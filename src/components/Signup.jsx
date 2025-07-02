@@ -22,7 +22,7 @@ function Signup() {
 
     return (
         <div className="signup-container">
-        <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "auto" }}>
+        <form onSubmit={handleSubmit} className="signup-form">
             <h2 className="signup-title text-center mt-4">Registrarse</h2>
 
 

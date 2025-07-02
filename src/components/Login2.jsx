@@ -30,7 +30,7 @@ function Login2() {
 
     return (
         <div className="login-container">
-        <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "auto" }}>
+        <form onSubmit={handleSubmit} className="login-form">
             <h2 className="login-title text-center mt-4">Iniciar sesión</h2>
             <div style={{ marginBottom: 12 }}>
                 <label>Email:</label><br />
