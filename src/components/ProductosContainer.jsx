@@ -1,49 +1,69 @@
-import { useEffect, useState } from "react"
-import "../styles/Productos.css"
-import Card from "./Card"
+import { useEffect, useState } from "react";
+import "../styles/Productos.css";
+import Card from "./Card";
+import { Container, Row, Col, Form } from "react-bootstrap";
 
-function ProductosContainer({functionCarrito}){
-    const [productos, setProductos] = useState([])
+function ProductosContainer() {
+    const [productos, setProductos] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
+    const [busqueda, setBusqueda] = useState("");
 
-    {useEffect(() => {
-        fetch('https://682a8de1ab2b5004cb370219.mockapi.io/Productos')
-        /* esta es la del profe -> https://68100d8b27f2fdac24101ef5.mockapi.io/productos */
-            .then((respuesta) =>
-                respuesta.json()
-            )
+    useEffect(() => {
+        fetch("https://682a8de1ab2b5004cb370219.mockapi.io/Productos")
+            .then((respuesta) => respuesta.json())
             .then((datos) => {
-                console.log(datos)
-                setProductos(datos)
+                setProductos(datos);
                 setCargando(false);
             })
             .catch((error) => {
-                console.log("Error", error)
-                setError('Hubo un problema al cargar los productos.');
+                console.log("Error", error);
+                setError("Hubo un problema al cargar los productos.");
                 setCargando(false);
             });
-    }, []);}
+    }, []);
 
+    const productosFiltrados = productos.filter((producto) =>
+        producto.name.toLowerCase().includes(busqueda.toLowerCase())
+    );
 
-    if (cargando) {
-        return <p>Cargando productos...</p>;
-    }else if (error){
-        return <p>{error}</p>;
-    }else{
-        return(
-            <div className="productos-conteiner">
-                {productos.map((producto) => (
-                    <Card
-                        producto={producto}
-                    />
-                ))}
-            </div>
-        )
-    }
+    if (cargando) return <p>Cargando productos...</p>;
+    if (error) return <p>{error}</p>;
 
-    
+    return (
+        <Container className="my-4">
+            {/* Barra de búsqueda */}
+            <Form className="mb-4">
+                <Form.Control
+                    className="busqueda-input"
+                    type="text"
+                    placeholder="Buscar productos..."
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
+                />
+            </Form>
+
+            {/* Productos */}
+            <Row className="justify-content-center">
+                {productosFiltrados.length > 0 ? (
+                    productosFiltrados.map((producto) => (
+                        <Col
+                            key={producto.id}
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            lg={3}
+                            className="d-flex justify-content-center mb-4"
+                        >
+                            <Card producto={producto} />
+                        </Col>
+                    ))
+                ) : (
+                    <p>No se encontraron productos.</p>
+                )}
+            </Row>
+        </Container>
+    );
 }
 
-export default ProductosContainer
-
+export default ProductosContainer;

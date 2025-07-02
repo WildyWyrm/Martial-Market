@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // <-- import useNavigate
-import "../styles/ProductoDetalle.css";
-import { dispararSweetBasico } from "../assets/SweetAlert";
+import { useParams, useNavigate } from "react-router-dom";
+import { Container, Row, Col, Button, ButtonGroup } from "react-bootstrap";
 import { CarritoContext } from "../contexts/CarritoContext";
+import { dispararSweetBasico } from "../assets/SweetAlert";
+import "../styles/ProductoDetalle.css";
 
-function ProductoDetalle({}) {
+function ProductoDetalle() {
   const { agregarAlCarrito } = useContext(CarritoContext);
   const { id } = useParams();
-  const navigate = useNavigate(); // <-- instancia
+  const navigate = useNavigate();
 
   const [producto, setProducto] = useState(null);
   const [cantidad, setCantidad] = useState(1);
@@ -45,15 +46,15 @@ function ProductoDetalle({}) {
   }
 
   function seguirComprando() {
-    navigate("/productos"); // Navega a la página productos
+    navigate("/productos");
   }
 
   function sumarContador() {
-    setCantidad(cantidad + 1);
+    setCantidad((prev) => prev + 1);
   }
 
   function restarContador() {
-    if (cantidad > 1) setCantidad(cantidad - 1);
+    if (cantidad > 1) setCantidad((prev) => prev - 1);
   }
 
   if (cargando) return <p>Cargando producto...</p>;
@@ -61,27 +62,47 @@ function ProductoDetalle({}) {
   if (!producto) return null;
 
   return (
-    <div className="detalle-container">
-      <img className="detalle-imagen" src={producto.image} alt={producto.name} />
+    <Container className="my-4">
+      <Row className="detalle-row p-4 shadow rounded">
+        <Col md={6} className="text-center mb-3">
+          <img
+            className="detalle-imagen"
+            src={producto.image}
+            alt={producto.name}
+          />
+        </Col>
 
-      <div className="detalle-info">
-        <h2>{producto.name}</h2>
-        <p>{producto.descriptin}</p>
-        <p>{producto.price} $</p>
+        <Col md={6} className="detalle-info">
+          <h2 className="mb-3">{producto.name}</h2>
+          <p className="text-muted">{producto.descriptin}</p>
+          <h5 className="text-success fw-bold">${producto.price}</h5>
 
-        <div className="detalle-contador" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <button onClick={restarContador}>-</button>
-          <span>{cantidad}</span>
-          <button onClick={sumarContador}>+</button>
+          {/* Contador centrado */}
+          <div className="my-3 d-flex justify-content-center">
+            <ButtonGroup aria-label="Contador cantidad">
+              <Button variant="secondary" onClick={restarContador}>
+                -
+              </Button>
+              <Button variant="light" disabled>
+                {cantidad}
+              </Button>
+              <Button variant="secondary" onClick={sumarContador}>
+                +
+              </Button>
+            </ButtonGroup>
+          </div>
 
-          <button onClick={seguirComprando} style={{ marginLeft: "20px" }}>
-            Seguir comprando
-          </button>
-        </div>
-
-        <button onClick={funcionCarrito}>Agregar al carrito</button>
-      </div>
-    </div>
+          <div className="d-flex gap-3 justify-content-center">
+            <Button variant="outline-primary" onClick={seguirComprando}>
+              Seguir comprando
+            </Button>
+            <Button variant="primary" onClick={funcionCarrito}>
+              Agregar al carrito
+            </Button>
+          </div>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

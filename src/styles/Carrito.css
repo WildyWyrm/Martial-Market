@@ -1,16 +1,94 @@
+.carrito-contenedor {
+    background-color: #BDD2E6;
+    /* gris verdoso claro, suave */
+    border: 1.5px solid #104028;
+    /* verde oscuro borde */
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 6px 15px rgba(16, 64, 40, 0.2);
+    margin-bottom: 3rem;
+    border-radius: 8px;
+    box-shadow: 0 0 6px rgba(47, 71, 210, 0.878);
+}
+
 .carrito-vacio {
-    margin-top: 20px;
-    padding: 20px;
-    font-size: larger;
+    font-size: 1.2rem;
     font-weight: bold;
     text-transform: uppercase;
-    background-color: rgb(21, 131, 54);
+    background-color: #0D6EFD;
+    /* verde más oscuro */
+    color: white;
     border: 2px solid white;
-    border-radius: 150px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+
+
 }
 
 .carrito-vacio:hover {
-    background-color: #e0ffe0;
-    color: #006400;
+    background-color: #b4d5b0;
+    /* verde claro suave para hover */
+    color: #004d00;
+    /* verde oscuro para texto hover */
     cursor: pointer;
+
+}
+
+.btn-outline-danger {
+    color: #104028 !important;
+    border-color: #104028 !important;
+    box-shadow: 0 0 6px rgba(228, 11, 11, 0.395);
+}
+
+.btn-outline-danger:hover {
+    background-color: #15599dc1;
+    color: white !important;
+    border-color: #0b301d !important;
+}
+
+.card-body {
+    box-shadow: 0 0 6px rgb(114, 114, 114);
+}
+
+.carrito-titulo {
+    font-family: 'Noto Serif', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #2b2b2b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 3px solid #8b0000;
+    /* rojo oscuro tipo cinta negra */
+    display: inline-block;
+    padding-bottom: 0.3rem;
+    margin-bottom: 2rem;
+}
+
+.descripcion {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    max-height: 3.2em;
+    color: #333;
+}
+
+.ver-mas {
+    -webkit-line-clamp: unset;
+    max-height: unset;
+}
+
+.btn-ver-mas {
+    background: none;
+    border: none;
+    color: #0d6efd;
+    padding: 0;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+.btn-ver-mas:hover {
+    text-decoration: underline;
 }
