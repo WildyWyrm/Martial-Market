@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import "../styles/Perfil.css";
 
 function Perfil() {
     const { user, updateProfile } = useAuth();
@@ -17,23 +18,25 @@ function Perfil() {
     };
 
     return (
-        <div style={{ maxWidth: 400, margin: "auto" }}>
-            <h2>Perfil de Usuario</h2>
-            <p><strong>Email:</strong> {user.email}</p>
-            <form onSubmit={handleUpdate}>
-                <div>
-                    <label>Nombre visible:</label><br />
+        <div className="perfil-container">
+            <form onSubmit={handleUpdate} className="perfil-form">
+                <h2 className="perfil-title text-center mt-4">Perfil de Usuario</h2>
+                <p className="perfil-email"><strong>Email:</strong> {user.email}</p>
+
+                <div className="form-group">
+                    <label>Nombre visible:</label>
                     <input
                         type="text"
                         value={nombre}
                         onChange={(e) => setNombre(e.target.value)}
                         required
-                        style={{ width: "100%", padding: 8 }}
                     />
                 </div>
-                <button type="submit" style={{ marginTop: 10 }}>Actualizar nombre</button>
+
+                <button type="submit" className="submit-button">Actualizar nombre</button>
+
+                {mensaje && <p className="perfil-mensaje">{mensaje}</p>}
             </form>
-            {mensaje && <p>{mensaje}</p>}
         </div>
     );
 }

@@ -1,18 +1,67 @@
-/* Banner de promoción  */
+.main-heading {
+    text-align: center;
+    font-family: 'Noto Serif', serif;
+    font-size: 2rem;
+    color: white;
+    margin-top: 40px;
+}
+
 .banner-promocion {
-    background-color: #003366; 
-    color: white; 
-    padding: 40px 20px; 
-    margin: 50px 0; 
-    border-radius: 8px; 
-    text-align: center
+    background-color: #003366;
+    color: white;
+    padding: 40px 20px;
+    margin: 50px auto;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 800px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .banner-title {
-    font-size: 2.2rem; 
+    font-size: 2.2rem;
     font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .banner-text {
-    font-size: 1.25rem; 
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+}
+
+.btn-banner {
+    background-color: #ffcc00;
+    color: #003366;
+    padding: 12px 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+}
+
+.btn-banner:hover {
+    background-color: #e6b800;
+    color: #001f3f;
+}
+
+.carousel-image {
+    max-height: 520px;
+    object-fit: cover;
+}
+
+.carousel-caption-bg {
+    background-color: rgba(0, 0, 0, 0.55);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+}
+
+body {
+    /* background-color: #343A40 !important; */
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    background-color: transparent;
 }

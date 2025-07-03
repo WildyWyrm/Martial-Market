@@ -1,0 +1,70 @@
+.perfil-container {
+    padding-bottom: 50px;
+}
+
+.perfil-form {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.perfil-title {
+    font-family: 'Noto Serif', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #2b2b2b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 3px solid #8b0000;
+    display: inline-block;
+    padding-bottom: 0.3rem;
+    margin-bottom: 1.5rem;
+}
+
+.perfil-email {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #8b0000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.submit-button:hover {
+    background-color: #a30000;
+}
+
+.perfil-mensaje {
+    margin-top: 1rem;
+    color: green;
+    font-weight: 500;
+    text-align: center;
+}
