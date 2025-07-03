@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/Signup.css";
 
 function Signup() {
@@ -22,42 +22,41 @@ function Signup() {
 
     return (
         <div className="signup-container">
-        <form onSubmit={handleSubmit} className="signup-form">
-            <h2 className="signup-title text-center mt-4">Registrarse</h2>
+            <form onSubmit={handleSubmit} className="signup-form">
+                <h2 className="signup-title text-center mt-4">Registrarse</h2>
 
+                <div className="form-group">
+                    <label>Email:</label>
+                    <input
+                        type="email"
+                        placeholder="tu@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        autoComplete="username"
+                    />
+                </div>
 
-            <div style={{ marginBottom: 12 }}>
-                <label>Email:</label>
-                <br />
-                <input
-                    type="email"
-                    placeholder="tu@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    autoComplete="username"
-                    style={{ width: "100%", padding: 8 }}
-                />
-            </div>
+                <div className="form-group">
+                    <label>Contraseña:</label>
+                    <input
+                        type="password"
+                        placeholder="********"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        autoComplete="new-password"
+                    />
+                </div>
 
-            <div style={{ marginBottom: 12 }}>
-                <label>Contraseña:</label>
-                <br />
-                <input
-                    type="password"
-                    placeholder="********"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    autoComplete="new-password"
-                    style={{ width: "100%", padding: 8 }}
-                />
-            </div>
+                <button type="submit" className="submit-button">
+                    Crear cuenta
+                </button>
 
-            <button type="submit" style={{ width: "100%", padding: 10 }}>
-                Crear cuenta
-            </button>
-        </form>
+                <p className="redirect-login">
+                    ¿Ya tenés cuenta? <Link to="/login">Iniciá sesión acá</Link>
+                </p>
+            </form>
         </div>
     );
 }

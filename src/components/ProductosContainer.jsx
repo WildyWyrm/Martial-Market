@@ -49,10 +49,10 @@ function ProductosContainer() {
                     productosFiltrados.map((producto) => (
                         <Col
                             key={producto.id}
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            lg={3}
+                            xs={6}   // 2 por fila en mobile
+                            sm={6}   // 2 por fila en tablets pequeñas
+                            md={4}   // 3 por fila en tablets grandes
+                            lg={3}   // 4 por fila en desktop
                             className="d-flex justify-content-center mb-4"
                         >
                             <Card producto={producto} />
