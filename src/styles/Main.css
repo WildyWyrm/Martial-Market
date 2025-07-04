@@ -1,12 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&display=swap');
+
 .main-heading {
     text-align: center;
-    font-family: 'Noto Serif', serif;
+    font-family: 'Sawarabi Mincho', serif;
     font-size: 2rem;
     color: white;
     padding-top: 20px;
     padding-bottom: 20px;
     background-color: #343A40 !important;
 }
+
 
 .banner-promocion {
     background-color: #003366;
@@ -67,3 +70,4 @@
 main {
     background-color: transparent;
 }
+
