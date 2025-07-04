@@ -20,7 +20,7 @@ function NavBar() {
         }
     };
 
-    // Función para cerrar menú al clickear cualquier link
+
     const cerrarMenu = () => setExpanded(false);
 
     return (
@@ -29,7 +29,7 @@ function NavBar() {
             variant="dark"
             expand="md"
             className="py-2"
-            expanded={expanded} // controlamos si está abierto o no
+            expanded={expanded}
         >
             <Container>
                 <Navbar.Brand as={Link} to="/" onClick={cerrarMenu}>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function Main() {
     return (
-        <main>
+        <main className='mainbg'>
             <h2 className="main-heading">Tienda de Artículos de Artes Marciales</h2>
             <div className="banner-promocion">
                 <h2 className="banner-title">¡POTENCIA TU ENTRENAMIENTO HOY MISMO!</h2>

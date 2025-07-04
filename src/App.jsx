@@ -19,7 +19,7 @@ function App() {
 
   return (
     <Router>
-      <div>
+      <>
         <Nav />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -37,7 +37,7 @@ function App() {
           {/* Ruta protegida Perfil */}
           <Route path="/perfil" element={user ? <Perfil /> : <Navigate to="/login" replace />} />
         </Routes>
-      </div>
+      </>
     </Router>
   );
 }

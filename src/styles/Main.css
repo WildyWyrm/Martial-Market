@@ -3,14 +3,16 @@
     font-family: 'Noto Serif', serif;
     font-size: 2rem;
     color: white;
-    margin-top: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: #343A40 !important;
 }
 
 .banner-promocion {
     background-color: #003366;
     color: white;
     padding: 40px 20px;
-    margin: 50px auto;
+    margin: auto;
     border-radius: 8px;
     text-align: center;
     max-width: 800px;
@@ -56,8 +58,8 @@
     border-radius: 12px;
 }
 
-body {
-    /* background-color: #343A40 !important; */
+.mainbg {
+    background-color: #343A40 !important;
     margin: 0;
     padding: 0;
 }
