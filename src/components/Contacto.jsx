@@ -5,8 +5,8 @@ import '../styles/Contacto.css';
 
 function Contacto() {
     return (
-        <>
-            <Container className="my-5">
+        <div className="contacto-page">
+            <Container className="contenedor">
                 <section id="contacto">
                     <h2 className="text-center mb-4">Envíanos un mensaje</h2>
 
@@ -76,8 +76,9 @@ function Contacto() {
                     />
                 </div>
             </Container>
+
             <Footer />
-        </>
+        </div>
     );
 }
 
