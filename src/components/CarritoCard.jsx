@@ -1,11 +1,10 @@
 import "../styles/CarritoCard.css"
 
-function CarritoCard({producto, funcionDisparadora}){
+function CarritoCard({ producto, funcionDisparadora }) {
     
     function borrarDelCarrito() {
         funcionDisparadora(producto.id);
     }
-
 
     const precioNumerico = Number(
         String(producto.price).replace(/\./g, '').replace(',', '.')
@@ -14,11 +13,17 @@ function CarritoCard({producto, funcionDisparadora}){
     const subtotal = precioNumerico * producto.cantidad;
 
     return (
-        <div className="carrito-card">
+        <article className="carrito-card" aria-label={`Producto ${producto.name} en el carrito`}>
             <h3 className="carrito-producto" style={{color:"black"}}>{producto.name}</h3>
             <p className="descripcion-carrito" style={{color:"black"}}>{producto.descriptin}</p>
-            <img className="carrito-image" src={producto.image} alt={producto.name} />
-            <span style={{color:"black"}}>{producto.cantidad}</span>
+            <img 
+                className="carrito-image" 
+                src={producto.image} 
+                alt={`Imagen de ${producto.name}`} 
+            />
+            <span style={{color:"black"}} aria-label={`Cantidad: ${producto.cantidad}`}>
+                {producto.cantidad}
+            </span>
             <div className="carrito-unitario">
                 <span style={{color:"black"}}>
                     ${precioNumerico.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
@@ -37,10 +42,11 @@ function CarritoCard({producto, funcionDisparadora}){
                     color: "black",
                     cursor: "pointer"
                 }}
+                aria-label={`Quitar ${producto.name} del carrito`}
             >
                 X
             </button>
-        </div>
+        </article>
     );
 }
 

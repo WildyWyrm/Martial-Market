@@ -1,13 +1,25 @@
 import React from 'react';
 import { Container, Form, Button, Col } from 'react-bootstrap';
 import Footer from '../components/Footer'; 
+import { Helmet } from 'react-helmet-async';
 import '../styles/Contacto.css';
 
 function Contacto() {
     return (
         <div className="contacto-page">
+            <Helmet>
+                <title>Contacto | Martial Market</title>
+                <meta
+                    name="description"
+                    content="Envíanos un mensaje para consultas, dudas o soporte en Martial Market, tu tienda online de artículos de artes marciales."
+                />
+                <meta name="robots" content="index, follow" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta charSet="utf-8" />
+            </Helmet>
+
             <Container className="contenedor">
-                <section id="contacto">
+                <section id="contacto" aria-label="Formulario de contacto">
                     <h2 className="text-center mb-4">Envíanos un mensaje</h2>
 
                     <Form
@@ -63,7 +75,10 @@ function Contacto() {
 
             <Container className="my-5">
                 <h2 className="text-center mb-4">Ubicación</h2>
-                <div className="map-container">
+                <div
+                    className="map-container"
+                    aria-label="Mapa de ubicación de Martial Market"
+                >
                     <iframe
                         title="Ubicación Martial Market"
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.1238954637756!2d-58.772739723476775!3d-34.60102845735749!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bc96705fb6c5b5%3A0xe56b8bd55d0aaf50!2sManuel%20G%C3%A1lvez%208342%2C%20B1744%20Moreno%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1709428274263!5m2!1ses!2sar"
