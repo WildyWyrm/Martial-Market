@@ -12,6 +12,7 @@ import Admin from './components/Admin';
 import Login2 from './components/Login2';
 import Signup from './components/Signup';
 import Perfil from "./components/Perfil.jsx";
+import NotFound from "./components/NotFound"; // <-- importa tu componente 404
 
 function App() {
   const { user } = useAuth();
@@ -36,6 +37,9 @@ function App() {
 
           {/* Ruta protegida Perfil */}
           <Route path="/perfil" element={user ? <Perfil /> : <Navigate to="/login" replace />} />
+
+          {/* Ruta catch-all para mostrar la página 404 */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </>
     </Router>

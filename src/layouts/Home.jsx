@@ -9,13 +9,38 @@ function Home() {
         <HelmetProvider>
             <>
                 <Helmet>
-                    <title>Martial Market - Tienda de Artes Marciales</title>
+                    <title>Martial Market | Doboks y artículos de artes marciales en Moreno</title>
                     <meta
                         name="description"
-                        content="Compra productos de artes marciales de alta calidad a precios accesibles."
+                        content="Tienda en Moreno de artículos de artes marciales: doboks, protecciones, accesorios y más. Zona oeste y envíos a todo el país."
+                    />
+                    <meta
+                        name="keywords"
+                        content="doboks, artes marciales, moreno, zona oeste, protecciones, taekwondo, karate, uniformes"
                     />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
-                    {/* Puedes agregar más meta tags aquí */}
+
+                    {/* Open Graph (Facebook y otras redes) */}
+                    <meta property="og:title" content="Martial Market | Tienda de Artes Marciales" />
+                    <meta
+                        property="og:description"
+                        content="Comprá tus productos de artes marciales en Moreno. Doboks, protecciones, accesorios y más. Envíos a todo el país."
+                    />
+                    <meta property="og:image" content="https://martial-market.netlify.app/imagenes/Martial%20Market.png" />
+                    <meta property="og:url" content="https://martial-market.netlify.app" />
+                    <meta property="og:type" content="website" />
+
+                    {/* Twitter Card */}
+                    <meta name="twitter:card" content="summary_large_image" />
+                    <meta name="twitter:title" content="Martial Market | Tienda de Artes Marciales" />
+                    <meta
+                        name="twitter:description"
+                        content="Tienda en Moreno con artículos para artes marciales: doboks, accesorios, guantes y más."
+                    />
+                    <meta name="twitter:image" content="https://martial-market.netlify.app/imagenes/Martial%20Market.png" />
+
+                    {/* Canonical para evitar contenido duplicado */}
+                    <link rel="canonical" href="https://martial-market.netlify.app/" />
                 </Helmet>
 
                 <header>
