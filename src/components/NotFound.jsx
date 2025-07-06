@@ -14,7 +14,7 @@ function NotFound() {
                 o explorar otras secciones.
             </p>
             <img
-                src="https://cdn-icons-png.flaticon.com/512/404/404001.png"
+                src="https://cdn-icons-png.flaticon.com/512/564/564619.png"
                 alt="404 error"
                 style={{ width: "200px", marginTop: "2rem" }}
             />
