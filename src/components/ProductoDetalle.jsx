@@ -28,7 +28,7 @@ function ProductoDetalle() {
         setCargando(false);
       })
       .catch((err) => {
-        console.log("Error:", err);
+        console.error("Error:", err);
         setError("Hubo un error al obtener el producto.");
         setCargando(false);
       });
@@ -57,52 +57,71 @@ function ProductoDetalle() {
     if (cantidad > 1) setCantidad((prev) => prev - 1);
   }
 
-  if (cargando) return <p>Cargando producto...</p>;
-  if (error) return <p>{error}</p>;
+  if (cargando)
+    return (
+      <p role="status" aria-live="polite" aria-busy="true">
+        Cargando producto...
+      </p>
+    );
+  if (error)
+    return (
+      <p role="alert" aria-live="assertive" style={{ color: "red" }}>
+        {error}
+      </p>
+    );
   if (!producto) return null;
 
   return (
-    <Container className="my-4">
-      <Row className="detalle-row p-4 shadow rounded">
-        <Col md={6} className="text-center mb-3">
-          <img
-            className="detalle-imagen"
-            src={producto.image}
-            alt={producto.name}
-          />
-        </Col>
+    <main>
+      <Container className="my-4">
+        <section
+          className="detalle-row p-4 shadow rounded"
+          aria-label={`Detalle del producto ${producto.name}`}
+        >
+          <Row>
+            <Col md={6} className="text-center mb-3">
+              <img
+                className="detalle-imagen"
+                src={producto.image}
+                alt={`Imagen del producto ${producto.name}`}
+              />
+            </Col>
 
-        <Col md={6} className="detalle-info">
-          <h2 className="mb-3">{producto.name}</h2>
-          <p className="text-muted">{producto.descriptin}</p>
-          <h5 className="text-success fw-bold">${producto.price}</h5>
+            <Col md={6} className="detalle-info">
+              <h2 tabIndex={0} className="mb-3">
+                {producto.name}
+              </h2>
+              <p className="text-muted">{producto.descriptin}</p>
+              <h5 className="text-success fw-bold">${producto.price}</h5>
 
-          {/* Contador centrado */}
-          <div className="my-3 d-flex justify-content-center">
-            <ButtonGroup aria-label="Contador cantidad">
-              <Button variant="secondary" onClick={restarContador}>
-                -
-              </Button>
-              <Button variant="light" disabled>
-                {cantidad}
-              </Button>
-              <Button variant="secondary" onClick={sumarContador}>
-                +
-              </Button>
-            </ButtonGroup>
-          </div>
+              {/* Contador centrado */}
+              <div className="my-3 d-flex justify-content-center">
+                <ButtonGroup aria-label="Control de cantidad del producto">
+                  <Button variant="secondary" onClick={restarContador} aria-label="Disminuir cantidad">
+                    -
+                  </Button>
+                  <Button variant="light" disabled aria-live="polite" aria-atomic="true">
+                    {cantidad}
+                  </Button>
+                  <Button variant="secondary" onClick={sumarContador} aria-label="Aumentar cantidad">
+                    +
+                  </Button>
+                </ButtonGroup>
+              </div>
 
-          <div className="d-flex gap-3 justify-content-center">
-            <Button variant="outline-primary" onClick={seguirComprando}>
-              Seguir comprando
-            </Button>
-            <Button variant="primary" onClick={funcionCarrito}>
-              Agregar al carrito
-            </Button>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+              <div className="d-flex gap-3 justify-content-center">
+                <Button variant="outline-primary" onClick={seguirComprando} aria-label="Seguir comprando productos">
+                  Seguir comprando
+                </Button>
+                <Button variant="primary" onClick={funcionCarrito} aria-label="Agregar producto al carrito">
+                  Agregar al carrito
+                </Button>
+              </div>
+            </Col>
+          </Row>
+        </section>
+      </Container>
+    </main>
   );
 }
 

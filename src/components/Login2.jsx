@@ -29,14 +29,19 @@ function Login2() {
     };
 
     return (
-        <div className="login-container">
-            <form onSubmit={handleSubmit} className="login-form">
-                <h2 className="login-title text-center mt-4">Iniciar sesión</h2>
+        <section
+            aria-label="Formulario de inicio de sesión"
+            className="login-container"
+        >
+            <form onSubmit={handleSubmit} className="login-form" role="form">
+                <h1 className="login-title text-center mt-4">Iniciar sesión</h1>
 
                 <div className="form-group">
-                    <label>Email:</label>
+                    <label htmlFor="email">Email:</label>
                     <input
+                        id="email"
                         type="email"
+                        name="email"
                         placeholder="tu@email.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -46,9 +51,11 @@ function Login2() {
                 </div>
 
                 <div className="form-group">
-                    <label>Contraseña:</label>
+                    <label htmlFor="password">Contraseña:</label>
                     <input
+                        id="password"
                         type="password"
+                        name="password"
                         placeholder="********"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -61,7 +68,7 @@ function Login2() {
                     Iniciar sesión
                 </button>
 
-                <hr style={{ margin: "20px 0" }} />
+                <hr aria-hidden="true" style={{ margin: "20px 0" }} />
 
                 <button
                     type="button"
@@ -75,7 +82,7 @@ function Login2() {
                     ¿No tenés cuenta? <Link to="/signup">Registrate acá</Link>
                 </p>
             </form>
-        </div>
+        </section>
     );
 }
 

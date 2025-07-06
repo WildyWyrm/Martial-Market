@@ -27,42 +27,64 @@ function ProductosContainer() {
         producto.name.toLowerCase().includes(busqueda.toLowerCase())
     );
 
-    if (cargando) return <p>Cargando productos...</p>;
-    if (error) return <p>{error}</p>;
+    if (cargando)
+        return (
+            <p role="status" aria-live="polite" aria-busy="true">
+                Cargando productos...
+            </p>
+        );
+
+    if (error)
+        return (
+            <p role="alert" aria-live="assertive" style={{ color: "red" }}>
+                {error}
+            </p>
+        );
 
     return (
-        <Container className="my-4">
-            {/* Barra de búsqueda */}
-            <Form className="mb-4">
-                <Form.Control
-                    className="busqueda-input"
-                    type="text"
-                    placeholder="Buscar productos..."
-                    value={busqueda}
-                    onChange={(e) => setBusqueda(e.target.value)}
-                />
-            </Form>
+        <main>
+            <Container className="my-4" aria-label="Listado de productos">
+                {/* Barra de búsqueda */}
+                <Form className="mb-4">
+                    <Form.Control
+                        className="busqueda-input"
+                        type="text"
+                        placeholder="Buscar productos..."
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                        aria-label="Buscar productos"
+                    />
+                </Form>
 
-            {/* Productos */}
-            <Row className="justify-content-center">
+                {/* Productos */}
                 {productosFiltrados.length > 0 ? (
-                    productosFiltrados.map((producto) => (
-                        <Col
-                            key={producto.id}
-                            xs={6}   // 2 por fila en mobile
-                            sm={6}   // 2 por fila en tablets pequeñas
-                            md={4}   // 3 por fila en tablets grandes
-                            lg={3}   // 4 por fila en desktop
-                            className="d-flex justify-content-center mb-4"
-                        >
-                            <Card producto={producto} />
-                        </Col>
-                    ))
+                    <ul
+                        style={{ listStyleType: "none", paddingLeft: 0 }}
+                        aria-label="Resultados de productos filtrados"
+                    >
+                        <Row className="justify-content-center">
+                            {productosFiltrados.map((producto) => (
+                                <Col
+                                    key={producto.id}
+                                    xs={6}
+                                    sm={6}
+                                    md={4}
+                                    lg={3}
+                                    className="d-flex justify-content-center mb-4"
+                                    as="li"
+                                >
+                                    <Card producto={producto} />
+                                </Col>
+                            ))}
+                        </Row>
+                    </ul>
                 ) : (
-                    <p>No se encontraron productos.</p>
+                    <p role="alert" aria-live="assertive">
+                        No se encontraron productos.
+                    </p>
                 )}
-            </Row>
-        </Container>
+            </Container>
+        </main>
     );
 }
 

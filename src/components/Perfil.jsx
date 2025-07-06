@@ -18,26 +18,47 @@ function Perfil() {
     };
 
     return (
-        <div className="perfil-container">
-            <form onSubmit={handleUpdate} className="perfil-form">
-                <h2 className="perfil-title text-center mt-4">Perfil de Usuario</h2>
-                <p className="perfil-email"><strong>Email:</strong> {user.email}</p>
+        <main>
+            <section
+                className="perfil-container"
+                aria-label="Sección de perfil del usuario"
+            >
+                <form
+                    onSubmit={handleUpdate}
+                    className="perfil-form"
+                    aria-labelledby="perfil-title"
+                >
+                    <h1 id="perfil-title" className="perfil-title text-center mt-4">
+                        Perfil de Usuario
+                    </h1>
 
-                <div className="form-group">
-                    <label>Nombre visible:</label>
-                    <input
-                        type="text"
-                        value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
-                        required
-                    />
-                </div>
+                    <p className="perfil-email">
+                        <strong>Email:</strong> {user.email}
+                    </p>
 
-                <button type="submit" className="submit-button">Actualizar nombre</button>
+                    <div className="form-group">
+                        <label htmlFor="nombre-usuario">Nombre visible:</label>
+                        <input
+                            id="nombre-usuario"
+                            type="text"
+                            value={nombre}
+                            onChange={(e) => setNombre(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                {mensaje && <p className="perfil-mensaje">{mensaje}</p>}
-            </form>
-        </div>
+                    <button
+                        type="submit"
+                        className="submit-button"
+                        aria-label="Actualizar nombre visible"
+                    >
+                        Actualizar nombre
+                    </button>
+
+                    {mensaje && <p className="perfil-mensaje">{mensaje}</p>}
+                </form>
+            </section>
+        </main>
     );
 }
 
