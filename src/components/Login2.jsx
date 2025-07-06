@@ -33,7 +33,7 @@ function Login2() {
             aria-label="Formulario de inicio de sesión"
             className="login-container"
         >
-            <form onSubmit={handleSubmit} className="login-form" role="form">
+            <form onSubmit={handleSubmit} className="login-form">
                 <h1 className="login-title text-center mt-4">Iniciar sesión</h1>
 
                 <div className="form-group">
