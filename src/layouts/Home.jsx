@@ -41,6 +41,39 @@ function Home() {
 
                     {/* Canonical para evitar contenido duplicado */}
                     <link rel="canonical" href="https://martial-market.netlify.app/" />
+
+                    {/* Structured Data JSON-LD */}
+                    <script type="application/ld+json">
+                        {`
+                        {
+                          "@context": "https://schema.org",
+                          "@type": "LocalBusiness",
+                          "name": "Martial Market",
+                          "image": "https://martial-market.netlify.app/imagenes/Martial%20Market.png",
+                          "description": "Tienda en Moreno con artículos para artes marciales: doboks, accesorios, guantes y más.",
+                          "address": {
+                            "@type": "PostalAddress",
+                            "streetAddress": "Manuel Gálvez 8342",
+                            "addressLocality": "Moreno",
+                            "addressRegion": "Buenos Aires",
+                            "postalCode": "1744",
+                            "addressCountry": "AR"
+                          },
+                          "geo": {
+                            "@type": "GeoCoordinates",
+                            "latitude": "-34.63579",
+                            "longitude": "-58.79142"
+                          },
+                          "url": "https://martial-market.netlify.app",
+                          "telephone": "+54 11 6433-4499",
+                          "priceRange": "$$",
+                          "sameAs": [
+                            "https://www.facebook.com/martialmarket",
+                            "https://www.instagram.com/martialmarket"
+                          ]
+                        }
+                        `}
+                    </script>
                 </Helmet>
 
                 <header>
