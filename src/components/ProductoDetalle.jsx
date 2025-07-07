@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button, ButtonGroup } from "react-bootstrap";
 import { CarritoContext } from "../contexts/CarritoContext";
 import { dispararSweetBasico } from "../assets/SweetAlert";
+import { Helmet } from "react-helmet-async";
 import "../styles/ProductoDetalle.css";
 
 function ProductoDetalle() {
@@ -63,65 +64,68 @@ function ProductoDetalle() {
         Cargando producto...
       </p>
     );
+
   if (error)
     return (
       <p role="alert" aria-live="assertive" style={{ color: "red" }}>
         {error}
       </p>
     );
+
   if (!producto) return null;
 
   return (
-    <main>
-      <Container className="my-4">
-        <section
-          className="detalle-row p-4 shadow rounded"
-          aria-label={`Detalle del producto ${producto.name}`}
-        >
-          <Row>
-            <Col md={6} className="text-center mb-3">
-              <img
-                className="detalle-imagen"
-                src={producto.image}
-                alt={`Imagen del producto ${producto.name}`}
-              />
-            </Col>
+    <>
+      <Helmet>
+        <title>{producto.name} | Martial Market</title>
+        <meta name="description" content={producto.descriptin?.slice(0, 150)} />
+        <meta property="og:title" content={producto.name} />
+        <meta property="og:description" content={producto.descriptin?.slice(0, 150)} />
+        <meta property="og:image" content={producto.image} />
+        <meta property="og:url" content={`https://martial-market.netlify.app/productos/${producto.id}`} />
+        <link rel="canonical" href={`https://martial-market.netlify.app/productos/${producto.id}`} />
+      </Helmet>
 
-            <Col md={6} className="detalle-info">
-              <h2 tabIndex={0} className="mb-3">
-                {producto.name}
-              </h2>
-              <p className="text-muted">{producto.descriptin}</p>
-              <h5 className="text-success fw-bold">${producto.price}</h5>
+      <main>
+        <Container className="my-4">
+          <section
+            className="detalle-row p-4 shadow rounded"
+            aria-label={`Detalle del producto ${producto.name}`}
+          >
+            <Row>
+              <Col md={6} className="text-center mb-3">
+                <img
+                  className="detalle-imagen"
+                  src={producto.image}
+                  alt={`Imagen del producto ${producto.name}`}
+                />
+              </Col>
 
-              {/* Contador centrado */}
-              <div className="my-3 d-flex justify-content-center">
-                <ButtonGroup aria-label="Control de cantidad del producto">
-                  <Button variant="secondary" onClick={restarContador} aria-label="Disminuir cantidad">
-                    -
-                  </Button>
-                  <Button variant="light" disabled aria-live="polite" aria-atomic="true">
-                    {cantidad}
-                  </Button>
-                  <Button variant="secondary" onClick={sumarContador} aria-label="Aumentar cantidad">
-                    +
-                  </Button>
-                </ButtonGroup>
-              </div>
+              <Col md={6} className="detalle-info">
+                <h2 tabIndex={0} className="mb-3">
+                  {producto.name}
+                </h2>
+                <p className="text-muted">{producto.descriptin}</p>
+                <h5 className="text-success fw-bold">${producto.price}</h5>
 
-              <div className="d-flex gap-3 justify-content-center">
-                <Button variant="outline-primary" onClick={seguirComprando} aria-label="Seguir comprando productos">
-                  Seguir comprando
-                </Button>
-                <Button variant="primary" onClick={funcionCarrito} aria-label="Agregar producto al carrito">
-                  Agregar al carrito
-                </Button>
-              </div>
-            </Col>
-          </Row>
-        </section>
-      </Container>
-    </main>
+                <div className="my-3 d-flex justify-content-center">
+                  <ButtonGroup aria-label="Control de cantidad del producto">
+                    <Button variant="secondary" onClick={restarContador} aria-label="Disminuir cantidad">-</Button>
+                    <Button variant="light" disabled>{cantidad}</Button>
+                    <Button variant="secondary" onClick={sumarContador} aria-label="Aumentar cantidad">+</Button>
+                  </ButtonGroup>
+                </div>
+
+                <div className="d-flex gap-3 justify-content-center">
+                  <Button variant="outline-primary" onClick={seguirComprando}>Seguir comprando</Button>
+                  <Button variant="primary" onClick={funcionCarrito}>Agregar al carrito</Button>
+                </div>
+              </Col>
+            </Row>
+          </section>
+        </Container>
+      </main>
+    </>
   );
 }
 

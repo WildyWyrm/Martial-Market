@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Form, Button, Col } from 'react-bootstrap';
-import Footer from '../components/Footer'; 
+import Footer from '../components/Footer';
 import { Helmet } from 'react-helmet-async';
 import '../styles/Contacto.css';
 
@@ -91,7 +91,7 @@ function Contacto() {
                     />
                 </div>
             </Container>
-
+            <hr className="linea-separadora" />
             <Footer />
         </div>
     );
