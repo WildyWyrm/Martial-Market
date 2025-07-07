@@ -1,0 +1,42 @@
+/* Fondo de overlay */
+.swal2-container {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(3px);
+}
+
+/* Estilo general del popup */
+.popup-marcial {
+    border: 2px solid #ffcc00;
+    border-radius: 16px;
+    padding: 1.5rem;
+    background-color: #1c1c1c !important;
+    color: #f1f1f1 !important;
+    max-width: 100%;
+}
+
+/* Título con estilo marcial */
+.titulo-marcial {
+    font-family: 'Noto Serif', serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #ffcc00 !important;
+    letter-spacing: 1px;
+}
+
+/* Botón estilo amarillo marcial */
+.boton-marcial-amarillo {
+    background-color: #ffcc00 !important;
+    color: #1c1c1c !important;
+    font-weight: bold;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+    box-shadow: 0 0 8px #ffcc00;
+    transition: all 0.3s ease;
+}
+
+.boton-marcial-amarillo:hover {
+    background-color: #e6b800 !important;
+    box-shadow: 0 0 12px #e6b800;
+}
