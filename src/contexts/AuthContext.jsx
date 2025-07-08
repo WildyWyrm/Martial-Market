@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { auth, googleProvider } from "../auth/firebase";
+import { auth, googleProvider, db } from "../auth/firebase";
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -8,26 +8,41 @@ import {
     signInWithPopup,
     updateProfile as firebaseUpdateProfile,
 } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [userRole, setUserRole] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             setUser(firebaseUser);
+
+            if (firebaseUser) {
+                const docRef = doc(db, "users", firebaseUser.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    setUserRole(docSnap.data().role || "user");
+                } else {
+                    setUserRole("user");
+                }
+            } else {
+                setUserRole(null);
+            }
+
             setLoading(false);
         });
+
         return () => unsubscribe();
     }, []);
 
-    // Función para actualizar el perfil y el estado local del usuario
     const updateProfile = async (profile) => {
         if (!auth.currentUser) throw new Error("No hay usuario logueado");
         await firebaseUpdateProfile(auth.currentUser, profile);
-        // Actualizo el user del contexto
         setUser({ ...auth.currentUser });
     };
 
@@ -49,7 +64,16 @@ export function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider
-            value={{ user, signup, login, logout, loginWithGoogle, loading, updateProfile }}
+            value={{
+                user,
+                userRole,
+                signup,
+                login,
+                logout,
+                loginWithGoogle,
+                loading,
+                updateProfile,
+            }}
         >
             {!loading && children}
         </AuthContext.Provider>

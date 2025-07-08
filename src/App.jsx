@@ -12,11 +12,11 @@ import Admin from './components/Admin';
 import Login2 from './components/Login2';
 import Signup from './components/Signup';
 import Perfil from "./components/Perfil.jsx";
-import NotFound from "./components/NotFound"; // <-- importa tu componente 404
+import NotFound from "./components/NotFound";
 
 function App() {
-  const { user } = useAuth();
-  const esAdmin = user?.email === "brianbasabee@gmail.com";
+  const { user, userRole } = useAuth();
+  const esAdmin = userRole === "admin";
 
   return (
     <Router>
@@ -31,14 +31,8 @@ function App() {
           <Route path="/nosotros" element={<About />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/productos/:id" element={<ProductoDetalle />} />
-
-          {/* Ruta protegida Admin */}
           <Route path="/admin" element={esAdmin ? <Admin /> : <Navigate to="/login" replace />} />
-
-          {/* Ruta protegida Perfil */}
           <Route path="/perfil" element={user ? <Perfil /> : <Navigate to="/login" replace />} />
-
-          {/* Ruta catch-all para mostrar la página 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </>
