@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import { db } from "../services/firebaseconfig";
+import { db } from "../services/firebaseConfig";
 
 // Función para formatear número con puntos de miles
 const formatearMiles = (valor) => {

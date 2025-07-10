@@ -4,7 +4,7 @@ import Card from "./Card";
 import { Container, Row, Col, Form, Pagination } from "react-bootstrap";
 
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../services/firebaseconfig";
+import { db } from "../services/firebaseConfig";
 
 function ProductosContainer() {
     const [productos, setProductos] = useState([]);
