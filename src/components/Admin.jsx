@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import {
     Container,
     Form,
@@ -10,31 +9,120 @@ import {
     Image,
     Pagination,
     Alert,
+    InputGroup,
 } from "react-bootstrap";
-import "../styles/Admin.css";
+import {
+    collection,
+    getDocs,
+    addDoc,
+    deleteDoc,
+    doc,
+    updateDoc,
+} from "firebase/firestore";
+import { db } from "../services/firebaseconfig";
+import "../styles/admin.css";
+
+// Función para formatear número con puntos de miles (mostrar)
+const formatearMiles = (valor) => {
+    if (valor === null || valor === undefined) return "";
+    const num = Number(valor.toString().replace(/\./g, "").replace(",", "."));
+    return num.toLocaleString("es-AR", {
+        useGrouping: true,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    });
+};
+
+
+// Función para parsear string precio a número float (guardar)
+const parsearPrecio = (str) => {
+    if (!str) return null;
+    const limpio = str.toString().replace(/\./g, "").replace(",", ".");
+    const num = parseFloat(limpio);
+    return isNaN(num) ? null : num;
+};
 
 function FormularioProducto({ onProductoAgregado }) {
     const [producto, setProducto] = useState({
         name: "",
         descriptin: "",
-        price: "",
+        price: "", // precio unitario (para talle único)
         image: "",
     });
+    const [talles, setTalles] = useState([]); // lista de talles para inputs
 
+    // Manejo cambio campos simples
     const handleChange = (e) => {
-        setProducto({ ...producto, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        // Si es price, formatear para mostrar puntos (opcional)
+        if (name === "price") {
+            // Permitimos solo números y puntos en el input
+            const valorFormateado = value.replace(/[^0-9.]/g, "");
+            setProducto({ ...producto, [name]: valorFormateado });
+        } else {
+            setProducto({ ...producto, [name]: value });
+        }
     };
 
+    // Agregar nuevo talle vacío para editar
+    const agregarTalle = () => {
+        setTalles([...talles, { talle: "", precio: "" }]);
+    };
+
+    // Quitar talle por índice
+    const quitarTalle = (index) => {
+        setTalles(talles.filter((_, i) => i !== index));
+    };
+
+    // Cambiar talle o precio dentro del arreglo de talles
+    const handleTalleChange = (index, field, value) => {
+        const nuevosTalles = [...talles];
+
+        // Para precio, permitir sólo números y puntos
+        if (field === "precio") {
+            const valorFormateado = value.replace(/[^0-9.]/g, "");
+            nuevosTalles[index][field] = valorFormateado;
+        } else {
+            nuevosTalles[index][field] = value;
+        }
+
+        setTalles(nuevosTalles);
+    };
+
+    // Al enviar, procesamos talles en objeto si existen
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Filtrar talles válidos
+        const tallesValidos = talles.filter(
+            (t) => t.talle.trim() !== "" && t.precio.trim() !== "" && parsearPrecio(t.precio) !== null
+        );
+
+        let objetoPrices = null;
+
+        if (tallesValidos.length > 0) {
+            objetoPrices = tallesValidos.reduce((acc, curr) => {
+                acc[curr.talle.trim()] = parsearPrecio(curr.precio);
+                return acc;
+            }, {});
+        }
+
+        const precioUnicoLimpio =
+            producto.price.trim() !== "" ? parsearPrecio(producto.price) : null;
+
         try {
-            await axios.post(
-                "https://682a8de1ab2b5004cb370219.mockapi.io/Productos",
-                producto
-            );
+            await addDoc(collection(db, "productos"), {
+                name: producto.name,
+                descriptin: producto.descriptin,
+                price: objetoPrices ? null : precioUnicoLimpio,
+                prices: objetoPrices,
+                image: producto.image,
+            });
             alert("Producto agregado exitosamente");
             setProducto({ name: "", descriptin: "", price: "", image: "" });
-            onProductoAgregado();
+            setTalles([]);
+            if (onProductoAgregado) onProductoAgregado();
         } catch (error) {
             console.error("Error al agregar producto:", error);
             alert("Ocurrió un error al agregar el producto");
@@ -55,6 +143,7 @@ function FormularioProducto({ onProductoAgregado }) {
                             required
                         />
                     </Col>
+
                     <Col md={6}>
                         <Form.Control
                             type="text"
@@ -65,19 +154,24 @@ function FormularioProducto({ onProductoAgregado }) {
                             required
                         />
                     </Col>
+
+                    {/* Si hay talles, ocultamos el precio único */}
+                    {talles.length === 0 && (
+                        <Col md={6}>
+                            <Form.Control
+                                type="text"
+                                name="price"
+                                placeholder="Precio (para talle único)"
+                                value={producto.price}
+                                onChange={handleChange}
+                                required={talles.length === 0}
+                            />
+                        </Col>
+                    )}
+
                     <Col md={6}>
                         <Form.Control
-                            type="number"
-                            name="price"
-                            placeholder="Precio"
-                            value={producto.price}
-                            onChange={handleChange}
-                            required
-                        />
-                    </Col>
-                    <Col md={6}>
-                        <Form.Control
-                            type="text"
+                            type="url"
                             name="image"
                             placeholder="URL de la imagen"
                             value={producto.image}
@@ -85,7 +179,46 @@ function FormularioProducto({ onProductoAgregado }) {
                             required
                         />
                     </Col>
-                    <Col md={12}>
+
+                    <Col md={12} className="mt-3">
+                        <h5>Precios por talle (opcional)</h5>
+                        {talles.map((t, index) => (
+                            <Row key={index} className="mb-2 align-items-center">
+                                <Col md={5}>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Talle (ej: S, M, L)"
+                                        value={t.talle}
+                                        onChange={(e) => handleTalleChange(index, "talle", e.target.value)}
+                                        required
+                                    />
+                                </Col>
+                                <Col md={5}>
+                                    <InputGroup>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Precio"
+                                            value={t.precio}
+                                            onChange={(e) => handleTalleChange(index, "precio", e.target.value)}
+                                            required
+                                        />
+                                    </InputGroup>
+                                </Col>
+                                <Col md={2}>
+                                    <Button variant="danger" onClick={() => quitarTalle(index)} title="Quitar talle">
+                                        X
+                                    </Button>
+                                </Col>
+                            </Row>
+                        ))}
+
+                        <Button variant="secondary" onClick={agregarTalle}>
+                            Agregar talle
+                        </Button>
+                    </Col>
+
+                    <Col md={12} className="mt-4">
                         <Button type="submit" className="w-100" variant="success">
                             Agregar Producto
                         </Button>
@@ -106,8 +239,10 @@ export default function Admin() {
         name: "",
         descriptin: "",
         price: "",
+        prices: {}, // objeto talles:precio
         image: "",
     });
+    const [tallesEditando, setTallesEditando] = useState([]);
 
     const [verMasDescripcion, setVerMasDescripcion] = useState({});
 
@@ -118,12 +253,16 @@ export default function Admin() {
         }));
     };
 
+    // Carga productos desde Firestore
     const fetchProductos = async () => {
         try {
-            const res = await axios.get(
-                "https://682a8de1ab2b5004cb370219.mockapi.io/Productos"
-            );
-            setProductos(res.data);
+            const productosCol = collection(db, "productos");
+            const snapshot = await getDocs(productosCol);
+            const listaProductos = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setProductos(listaProductos);
         } catch (error) {
             console.error("Error al cargar productos", error);
             alert("No se pudieron cargar los productos");
@@ -136,10 +275,8 @@ export default function Admin() {
 
     const borrarProducto = async (id) => {
         try {
-            await axios.delete(
-                `https://682a8de1ab2b5004cb370219.mockapi.io/Productos/${id}`
-            );
-            setProductos(productos.filter((producto) => producto.id !== id));
+            await deleteDoc(doc(db, "productos", id));
+            setProductos(productos.filter((p) => p.id !== id));
             alert("Producto borrado correctamente");
         } catch (error) {
             console.error("Error al borrar producto", error);
@@ -149,29 +286,96 @@ export default function Admin() {
 
     const iniciarEdicion = (producto) => {
         setProductoEditandoId(producto.id);
-        setProductoEditandoDatos({ ...producto });
+        setProductoEditandoDatos({
+            name: producto.name || "",
+            descriptin: producto.descriptin || "",
+            price: producto.price ? formatearMiles(producto.price) : "",
+            prices: producto.prices || {},
+            image: producto.image || "",
+        });
+
+        // Convertir objeto prices a array para edición con formato puntos
+        if (producto.prices) {
+            const tallesArray = Object.entries(producto.prices).map(([talle, precio]) => ({
+                talle,
+                precio: formatearMiles(precio),
+            }));
+            setTallesEditando(tallesArray);
+        } else {
+            setTallesEditando([]);
+        }
     };
 
     const cancelarEdicion = () => {
         setProductoEditandoId(null);
-        setProductoEditandoDatos({ name: "", descriptin: "", price: "", image: "" });
+        setProductoEditandoDatos({ name: "", descriptin: "", price: "", prices: {}, image: "" });
+        setTallesEditando([]);
     };
 
     const handleEditChange = (e) => {
-        setProductoEditandoDatos({
-            ...productoEditandoDatos,
-            [e.target.name]: e.target.value,
-        });
+        const { name, value } = e.target;
+        if (name === "price") {
+            const valorFormateado = value.replace(/[^0-9.]/g, "");
+            setProductoEditandoDatos({
+                ...productoEditandoDatos,
+                [name]: valorFormateado,
+            });
+        } else {
+            setProductoEditandoDatos({
+                ...productoEditandoDatos,
+                [name]: value,
+            });
+        }
+    };
+
+    const agregarTalleEdit = () => {
+        setTallesEditando([...tallesEditando, { talle: "", precio: "" }]);
+    };
+
+    const quitarTalleEdit = (index) => {
+        setTallesEditando(tallesEditando.filter((_, i) => i !== index));
+    };
+
+    const handleTalleEditChange = (index, field, value) => {
+        const nuevosTalles = [...tallesEditando];
+        if (field === "precio") {
+            const valorFormateado = value.replace(/[^0-9.]/g, "");
+            nuevosTalles[index][field] = valorFormateado;
+        } else {
+            nuevosTalles[index][field] = value;
+        }
+        setTallesEditando(nuevosTalles);
     };
 
     const guardarEdicion = async () => {
         try {
-            await axios.put(
-                `https://682a8de1ab2b5004cb370219.mockapi.io/Productos/${productoEditandoId}`,
-                productoEditandoDatos
+            const tallesValidos = tallesEditando.filter(
+                (t) => t.talle.trim() !== "" && t.precio.trim() !== "" && parsearPrecio(t.precio) !== null
             );
+
+            let objetoPrices = null;
+            if (tallesValidos.length > 0) {
+                objetoPrices = tallesValidos.reduce((acc, curr) => {
+                    acc[curr.talle.trim()] = parsearPrecio(curr.precio);
+                    return acc;
+                }, {});
+            }
+
+            const precioLimpio = productoEditandoDatos.price
+                ? parsearPrecio(productoEditandoDatos.price)
+                : null;
+
+            const docRef = doc(db, "productos", productoEditandoId);
+            await updateDoc(docRef, {
+                name: productoEditandoDatos.name,
+                descriptin: productoEditandoDatos.descriptin,
+                price: objetoPrices ? null : precioLimpio,
+                prices: objetoPrices,
+                image: productoEditandoDatos.image,
+            });
             alert("Producto actualizado correctamente");
             setProductoEditandoId(null);
+            setTallesEditando([]);
             fetchProductos();
         } catch (error) {
             console.error("Error al actualizar producto", error);
@@ -230,14 +434,20 @@ export default function Admin() {
                                                     onChange={handleEditChange}
                                                     required
                                                 />
-                                                <Form.Control
-                                                    className="mb-2"
-                                                    type="number"
-                                                    name="price"
-                                                    value={productoEditandoDatos.price}
-                                                    onChange={handleEditChange}
-                                                    required
-                                                />
+
+                                                {/* Mostrar input precio único solo si no hay talles */}
+                                                {tallesEditando.length === 0 && (
+                                                    <Form.Control
+                                                        className="mb-2"
+                                                        type="text"
+                                                        name="price"
+                                                        placeholder="Precio (para talle único)"
+                                                        value={productoEditandoDatos.price}
+                                                        onChange={handleEditChange}
+                                                        required={tallesEditando.length === 0}
+                                                    />
+                                                )}
+
                                                 <Form.Control
                                                     className="mb-2"
                                                     type="text"
@@ -246,6 +456,53 @@ export default function Admin() {
                                                     onChange={handleEditChange}
                                                     required
                                                 />
+
+                                                {/* Edición de talles */}
+                                                <div className="mb-3">
+                                                    <h6>Precios por talle (opcional)</h6>
+                                                    {tallesEditando.map((t, index) => (
+                                                        <Row key={index} className="mb-2 align-items-center">
+                                                            <Col md={5}>
+                                                                <Form.Control
+                                                                    type="text"
+                                                                    placeholder="Talle (ej: S, M, L)"
+                                                                    value={t.talle}
+                                                                    onChange={(e) =>
+                                                                        handleTalleEditChange(index, "talle", e.target.value)
+                                                                    }
+                                                                    required
+                                                                />
+                                                            </Col>
+                                                            <Col md={5}>
+                                                                <InputGroup>
+                                                                    <InputGroup.Text>$</InputGroup.Text>
+                                                                    <Form.Control
+                                                                        type="text"
+                                                                        placeholder="Precio"
+                                                                        value={t.precio}
+                                                                        onChange={(e) =>
+                                                                            handleTalleEditChange(index, "precio", e.target.value)
+                                                                        }
+                                                                        required
+                                                                    />
+                                                                </InputGroup>
+                                                            </Col>
+                                                            <Col md={2}>
+                                                                <Button
+                                                                    variant="danger"
+                                                                    onClick={() => quitarTalleEdit(index)}
+                                                                    title="Quitar talle"
+                                                                >
+                                                                    X
+                                                                </Button>
+                                                            </Col>
+                                                        </Row>
+                                                    ))}
+
+                                                    <Button variant="secondary" onClick={agregarTalleEdit}>
+                                                        Agregar talle
+                                                    </Button>
+                                                </div>
                                             </>
                                         ) : (
                                             <>
@@ -267,14 +524,18 @@ export default function Admin() {
                                                     )}
                                                 </p>
 
-                                                <strong>
-                                                    ${Number(String(producto.price).replace(/\./g, '').replace(',', '.')).toLocaleString("es-AR", {
-                                                        style: "decimal",
-                                                        minimumFractionDigits: 0,
-                                                        maximumFractionDigits: 0,
-                                                    })}
-
-                                                </strong>
+                                                {/* Mostrar precio único o listado de talles */}
+                                                {producto.prices && Object.keys(producto.prices).length > 0 ? (
+                                                    <ul>
+                                                        {Object.entries(producto.prices).map(([talle, precio]) => (
+                                                            <li key={talle}>
+                                                                <strong>{talle}:</strong> <strong>${formatearMiles(precio)}</strong>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                ) : (
+                                                    <strong>${formatearMiles(producto.price)}</strong>
+                                                )}
                                             </>
                                         )}
                                     </Col>
@@ -290,11 +551,7 @@ export default function Admin() {
                                                 >
                                                     Guardar
                                                 </Button>
-                                                <Button
-                                                    variant="secondary"
-                                                    size="sm"
-                                                    onClick={cancelarEdicion}
-                                                >
+                                                <Button variant="secondary" size="sm" onClick={cancelarEdicion}>
                                                     Cancelar
                                                 </Button>
                                             </>
@@ -327,7 +584,7 @@ export default function Admin() {
                     <Pagination className="justify-content-center mt-4 pb-4">
                         {Array.from({ length: totalPaginas }, (_, i) => (
                             <Pagination.Item
-                                key={i}
+                                key={i + 1}
                                 active={paginaActual === i + 1}
                                 onClick={() => setPaginaActual(i + 1)}
                             >

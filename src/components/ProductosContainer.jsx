@@ -3,6 +3,9 @@ import "../styles/Productos.css";
 import Card from "./Card";
 import { Container, Row, Col, Form, Pagination } from "react-bootstrap";
 
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../services/firebaseconfig";
+
 function ProductosContainer() {
     const [productos, setProductos] = useState([]);
     const [cargando, setCargando] = useState(true);
@@ -12,17 +15,20 @@ function ProductosContainer() {
     const productosPorPagina = 8;
 
     useEffect(() => {
-        fetch("https://682a8de1ab2b5004cb370219.mockapi.io/Productos")
-            .then((respuesta) => respuesta.json())
-            .then((datos) => {
-                setProductos(datos);
+        async function fetchProductos() {
+            try {
+                const productosCol = collection(db, "productos"); // nombre de la colección en Firestore
+                const snapshot = await getDocs(productosCol);
+                const listaProductos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setProductos(listaProductos);
                 setCargando(false);
-            })
-            .catch((error) => {
-                console.log("Error", error);
+            } catch (error) {
+                console.error("Error al cargar productos:", error);
                 setError("Hubo un problema al cargar los productos.");
                 setCargando(false);
-            });
+            }
+        }
+        fetchProductos();
     }, []);
 
     const productosFiltrados = productos.filter((producto) =>

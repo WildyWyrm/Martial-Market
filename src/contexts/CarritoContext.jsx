@@ -1,23 +1,27 @@
 import React, { createContext, useState } from 'react';
+
 export const CarritoContext = createContext();
+
 export function CarritoProvider({ children }) {
     const [productosCarrito, setProductosCarrito] = useState([]);
 
-    const agregarAlCarrito = (producto) => {
-        const existe = productosCarrito.find(p => p.id === producto.id);
+    const agregarAlCarrito = (productoNuevo) => {
+        const existe = productosCarrito.find(p =>
+            p.id === productoNuevo.id && p.talle === productoNuevo.talle
+        );
+
         if (existe) {
             const carritoActualizado = productosCarrito.map((p) => {
-                if (p.id === producto.id){
-                    const productoActualizado = {...p, cantidad: p.cantidad + producto.cantidad}
-                    return productoActualizado
-                }else{
-                    return p
+                if (p.id === productoNuevo.id && p.talle === productoNuevo.talle) {
+                    return { ...p, cantidad: p.cantidad + productoNuevo.cantidad };
+                } else {
+                    return p;
                 }
-            })
-            setProductosCarrito(carritoActualizado)
-        }else{
-            const nuevoCarrito = [...productosCarrito, producto];
-            setProductosCarrito(nuevoCarrito)
+            });
+            setProductosCarrito(carritoActualizado);
+        } else {
+            const nuevoCarrito = [...productosCarrito, productoNuevo];
+            setProductosCarrito(nuevoCarrito);
         }
     };
 
@@ -25,14 +29,22 @@ export function CarritoProvider({ children }) {
         setProductosCarrito([]);
     };
 
-    function borrarProductoCarrito(id){
-        console.log(id)
-        const nuevoCarrito = productosCarrito.filter((p) => p.id !== id);
+    const borrarProductoCarrito = (id, talle) => {
+        const nuevoCarrito = productosCarrito.filter(
+            (p) => !(p.id === id && p.talle === talle)
+        );
         setProductosCarrito(nuevoCarrito);
-    }
+    };
 
     return (
-        <CarritoContext.Provider value={{ productosCarrito, agregarAlCarrito, vaciarCarrito, borrarProductoCarrito }}>
+        <CarritoContext.Provider
+            value={{
+                productosCarrito,
+                agregarAlCarrito,
+                vaciarCarrito,
+                borrarProductoCarrito
+            }}
+        >
             {children}
         </CarritoContext.Provider>
     );

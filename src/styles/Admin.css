@@ -108,3 +108,9 @@
 .boton-pagina.activo {
     background-color: #007bff;
 } */
+
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}

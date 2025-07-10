@@ -2,7 +2,25 @@ import { Card as BCard, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "../styles/Productos.css";
 
+function formatearPrecio(precio) {
+  const tieneDecimales = precio % 1 !== 0;
+  return precio.toLocaleString("es-AR", {
+    minimumFractionDigits: tieneDecimales ? 2 : 0,
+    maximumFractionDigits: 3,
+  });
+}
+
 function Card({ producto }) {
+  let precioMostrar;
+
+  if (producto.prices) {
+    const precios = Object.values(producto.prices);
+    const precioMinimo = Math.min(...precios);
+    precioMostrar = precioMinimo;
+  } else {
+    precioMostrar = producto.price;
+  }
+
   return (
     <BCard as="article" className="producto-card text-center">
       <Link to={`/productos/${producto.id}`} className="mx-auto mt-3">
@@ -15,8 +33,12 @@ function Card({ producto }) {
       </Link>
       <BCard.Body className="d-flex flex-column justify-content-between">
         <div>
-          <BCard.Title as="h3" className="text-dark fs-5 mb-2">{producto.name}</BCard.Title>
-          <BCard.Text className="text-dark fw-bold mb-3">${producto.price}</BCard.Text>
+          <BCard.Title as="h3" className="text-dark fs-5 mb-2">
+            {producto.name}
+          </BCard.Title>
+          <BCard.Text className="text-dark fw-bold mb-3">
+            ${formatearPrecio(parseFloat(precioMostrar))}
+          </BCard.Text>
         </div>
         <Link to={`/productos/${producto.id}`}>
           <Button

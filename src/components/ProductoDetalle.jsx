@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Container, Row, Col, Button, ButtonGroup } from "react-bootstrap";
+import { Container, Row, Col, Button, ButtonGroup, Form } from "react-bootstrap";
 import { CarritoContext } from "../contexts/CarritoContext";
 import { dispararSweetBasico } from "../assets/SweetAlert";
 import { Helmet } from "react-helmet-async";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../services/firebaseConfig";
 import "../styles/ProductoDetalle.css";
 
 function ProductoDetalle() {
@@ -13,50 +15,80 @@ function ProductoDetalle() {
 
   const [producto, setProducto] = useState(null);
   const [cantidad, setCantidad] = useState(1);
+  const [talleSeleccionado, setTalleSeleccionado] = useState("");
+  const [precioTalle, setPrecioTalle] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("https://682a8de1ab2b5004cb370219.mockapi.io/Productos")
-      .then((res) => res.json())
-      .then((datos) => {
-        const productoEncontrado = datos.find((item) => item.id === id);
-        if (productoEncontrado) {
-          setProducto(productoEncontrado);
+    async function fetchProducto() {
+      try {
+        const docRef = doc(db, "productos", id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setProducto(data);
+
+          if (data.prices) {
+            const talles = Object.keys(data.prices);
+            setTalleSeleccionado(talles[0]);
+            setPrecioTalle(data.prices[talles[0]]);
+          } else {
+            setPrecioTalle(data.price);
+          }
         } else {
           setError("Producto no encontrado.");
         }
-        setCargando(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error:", err);
         setError("Hubo un error al obtener el producto.");
+      } finally {
         setCargando(false);
-      });
+      }
+    }
+
+    fetchProducto();
   }, [id]);
 
-  function funcionCarrito() {
-    if (cantidad < 1) return;
-    dispararSweetBasico(
-      "Producto Agregado",
-      "El producto fue agregado al carrito con éxito",
-      "success",
-      "Cerrar"
-    );
-    agregarAlCarrito({ ...producto, cantidad });
-  }
+  const funcionCarrito = () => {
+  if (cantidad < 1) return;
 
-  function seguirComprando() {
+  const productoParaAgregar = {
+    ...producto,
+    id, // 👈 esto es clave para identificar correctamente
+    cantidad,
+    price: precioTalle,
+    talle: talleSeleccionado || "Único",
+  };
+
+  dispararSweetBasico(
+    "Producto Agregado",
+    "El producto fue agregado al carrito con éxito",
+    "success",
+    "Cerrar"
+  );
+
+  agregarAlCarrito(productoParaAgregar);
+};
+
+
+  const seguirComprando = () => {
     navigate("/productos");
-  }
+  };
 
-  function sumarContador() {
+  const sumarContador = () => {
     setCantidad((prev) => prev + 1);
-  }
+  };
 
-  function restarContador() {
+  const restarContador = () => {
     if (cantidad > 1) setCantidad((prev) => prev - 1);
-  }
+  };
+
+  const handleTalleChange = (e) => {
+    const nuevoTalle = e.target.value;
+    setTalleSeleccionado(nuevoTalle);
+    setPrecioTalle(producto.prices[nuevoTalle]);
+  };
 
   if (cargando)
     return (
@@ -78,12 +110,24 @@ function ProductoDetalle() {
     <>
       <Helmet>
         <title>{producto.name} | Martial Market</title>
-        <meta name="description" content={producto.descriptin?.slice(0, 150)} />
+        <meta
+          name="description"
+          content={producto.descriptin?.slice(0, 150)}
+        />
         <meta property="og:title" content={producto.name} />
-        <meta property="og:description" content={producto.descriptin?.slice(0, 150)} />
+        <meta
+          property="og:description"
+          content={producto.descriptin?.slice(0, 150)}
+        />
         <meta property="og:image" content={producto.image} />
-        <meta property="og:url" content={`https://martial-market.netlify.app/productos/${producto.id}`} />
-        <link rel="canonical" href={`https://martial-market.netlify.app/productos/${producto.id}`} />
+        <meta
+          property="og:url"
+          content={`https://martial-market.netlify.app/productos/${producto.id}`}
+        />
+        <link
+          rel="canonical"
+          href={`https://martial-market.netlify.app/productos/${producto.id}`}
+        />
       </Helmet>
 
       <main>
@@ -106,19 +150,68 @@ function ProductoDetalle() {
                   {producto.name}
                 </h2>
                 <p className="text-muted">{producto.descriptin}</p>
-                <h5 className="text-success fw-bold">${producto.price}</h5>
+
+                {producto.prices ? (
+                  <>
+                    <Form.Group controlId="selectTalle" className="mb-3">
+                      <Form.Label>Seleccionar talle:</Form.Label>
+                      <Form.Select
+                        value={talleSeleccionado}
+                        onChange={handleTalleChange}
+                        aria-label="Seleccionar talle"
+                      >
+                        {Object.keys(producto.prices).map((talle) => (
+                          <option key={talle} value={talle}>
+                            Talle {talle}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </Form.Group>
+                    <h5 className="text-success fw-bold">
+                      ${Number(precioTalle).toLocaleString("es-AR", {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 3,
+                      })}
+                    </h5>
+                  </>
+                ) : (
+                  <h5 className="text-success fw-bold">
+                    ${Number(producto.price).toLocaleString("es-AR", {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 3,
+                    })}
+                  </h5>
+                )}
 
                 <div className="my-3 d-flex justify-content-center">
                   <ButtonGroup aria-label="Control de cantidad del producto">
-                    <Button variant="secondary" onClick={restarContador} aria-label="Disminuir cantidad">-</Button>
-                    <Button variant="light" disabled>{cantidad}</Button>
-                    <Button variant="secondary" onClick={sumarContador} aria-label="Aumentar cantidad">+</Button>
+                    <Button
+                      variant="secondary"
+                      onClick={restarContador}
+                      aria-label="Disminuir cantidad"
+                    >
+                      -
+                    </Button>
+                    <Button variant="light" disabled>
+                      {cantidad}
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={sumarContador}
+                      aria-label="Aumentar cantidad"
+                    >
+                      +
+                    </Button>
                   </ButtonGroup>
                 </div>
 
                 <div className="d-flex gap-3 justify-content-center">
-                  <Button variant="outline-primary" onClick={seguirComprando}>Seguir comprando</Button>
-                  <Button variant="primary" onClick={funcionCarrito}>Agregar al carrito</Button>
+                  <Button variant="outline-primary" onClick={seguirComprando}>
+                    Seguir comprando
+                  </Button>
+                  <Button variant="primary" onClick={funcionCarrito}>
+                    Agregar al carrito
+                  </Button>
                 </div>
               </Col>
             </Row>

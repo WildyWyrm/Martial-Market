@@ -10,7 +10,7 @@ export default function Carrito() {
     const { user } = useAuth();
     const { productosCarrito, vaciarCarrito, borrarProductoCarrito } = useContext(CarritoContext);
 
-    const [verMas, setVerMas] = useState({}); // objeto con estados por ID
+    const [verMas, setVerMas] = useState({});
 
     const toggleDescripcion = (id) => {
         setVerMas((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -51,7 +51,6 @@ export default function Carrito() {
                                 </Button>
                             </div>
 
-                            {/* Títulos solo desktop */}
                             <Row className="fw-bold text-uppercase text-center mb-2 d-none d-md-flex">
                                 <Col md={1}>Imagen</Col>
                                 <Col md={5}>Producto</Col>
@@ -71,7 +70,7 @@ export default function Carrito() {
                                     const verTodo = verMas[producto.id];
 
                                     return (
-                                        <Col xs={12} key={producto.id}>
+                                        <Col xs={12} key={producto.id + (producto.talle || "")}>
                                             <Card className="shadow-sm">
                                                 <Card.Body>
                                                     <Row className="align-items-center text-md-start">
@@ -85,7 +84,12 @@ export default function Carrito() {
                                                         </Col>
 
                                                         <Col xs={12} md={5}>
-                                                            <h5 className="mb-1">{producto.name}</h5>
+                                                            <h5 className="mb-1">
+                                                                {producto.name}{" "}
+                                                                {producto.talle ? (
+                                                                    <span className="text-muted small">- Talle {producto.talle}</span>
+                                                                ) : null}
+                                                            </h5>
                                                             <p
                                                                 id={`descripcion-${producto.id}`}
                                                                 className={`descripcion ${verTodo ? "ver-mas" : ""}`}
@@ -124,7 +128,8 @@ export default function Carrito() {
                                                             <Button
                                                                 size="sm"
                                                                 variant="outline-danger"
-                                                                onClick={() => borrarProductoCarrito(producto.id)}
+                                                                onClick={() => borrarProductoCarrito(producto.id, producto.talle)}
+
                                                             >
                                                                 Quitar
                                                             </Button>
