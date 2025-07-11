@@ -20,7 +20,7 @@ import {
     updateDoc,
 } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
-import "../styles/admin.css";
+import "../styles/Admin.css";
 
 // Función para formatear número con puntos de miles (mostrar)
 const formatearMiles = (valor) => {
