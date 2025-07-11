@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import "../styles/Productos.css";
 import Card from "./Card";
 import { Container, Row, Col, Form, Pagination } from "react-bootstrap";
-
-import { collection, getDocs } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
+
 
 function ProductosContainer() {
     const [productos, setProductos] = useState([]);
