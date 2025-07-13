@@ -2,12 +2,9 @@ import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 
-// Función para formatear número con puntos de miles
 const formatearMiles = (valor) => {
-  // Eliminar todo lo que no sea número
   const limpio = valor.replace(/\D/g, "");
   if (!limpio) return "";
-  // Poner puntos cada 3 dígitos
   return limpio.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 
@@ -16,31 +13,24 @@ export default function FormularioProducto({ onProductoAgregado }) {
     name: "",
     descriptin: "",
     price: "",
-    image: "",
+    images: "",
   });
 
   const [talles, setTalles] = useState([{ talle: "", precio: "" }]);
   const [loading, setLoading] = useState(false);
 
-  // Maneja cambios en inputs básicos (name, descriptin, image, price)
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "price") {
-      // Formatear visualmente el precio único con puntos
       setProducto({ ...producto, price: formatearMiles(value) });
     } else {
       setProducto({ ...producto, [name]: value });
     }
   };
 
-  // Maneja cambios en talles y precios
   const handleTalleChange = (index, field, value) => {
     const nuevosTalles = [...talles];
-    if (field === "precio") {
-      nuevosTalles[index][field] = formatearMiles(value);
-    } else {
-      nuevosTalles[index][field] = value;
-    }
+    nuevosTalles[index][field] = field === "precio" ? formatearMiles(value) : value;
     setTalles(nuevosTalles);
   };
 
@@ -49,8 +39,7 @@ export default function FormularioProducto({ onProductoAgregado }) {
   };
 
   const quitarTalle = (index) => {
-    const nuevosTalles = talles.filter((_, i) => i !== index);
-    setTalles(nuevosTalles);
+    setTalles(talles.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -58,7 +47,6 @@ export default function FormularioProducto({ onProductoAgregado }) {
     setLoading(true);
 
     try {
-      // Filtrar talles válidos y limpiar puntos
       const tallesValidos = talles.filter(
         (t) =>
           t.talle.trim() !== "" &&
@@ -66,36 +54,35 @@ export default function FormularioProducto({ onProductoAgregado }) {
           !isNaN(parseInt(t.precio.toString().replace(/\./g, "")))
       );
 
-      const objetoPrices =
-        tallesValidos.length > 0
-          ? tallesValidos.reduce((acc, curr) => {
-const precioLimpio = parseFloat(
-  curr.precio.toString().replace(/\./g, "").replace(",", ".")
-);
-
-              acc[curr.talle.trim()] = precioLimpio;
-              return acc;
-            }, {})
-          : null;
+      const objetoPrices = tallesValidos.length > 0
+        ? tallesValidos.reduce((acc, curr) => {
+            const precioLimpio = parseFloat(curr.precio.replace(/\./g, "").replace(",", "."));
+            acc[curr.talle.trim()] = precioLimpio;
+            return acc;
+          }, {})
+        : null;
 
       const precioUnicoLimpio = producto.price
         ? parseInt(producto.price.toString().replace(/\./g, ""))
         : null;
+
+      const imagenesArray = producto.images
+        .split(",")
+        .map((url) => url.trim())
+        .filter((url) => url !== "");
 
       const productoAGuardar = {
         name: producto.name,
         descriptin: producto.descriptin,
         price: objetoPrices ? null : precioUnicoLimpio,
         prices: objetoPrices,
-        image: producto.image,
+        images: imagenesArray,
       };
-
-      console.log("Producto a guardar:", productoAGuardar);
 
       await addDoc(collection(db, "productos"), productoAGuardar);
 
       alert("Producto agregado exitosamente");
-      setProducto({ name: "", descriptin: "", price: "", image: "" });
+      setProducto({ name: "", descriptin: "", price: "", images: "" });
       setTalles([{ talle: "", precio: "" }]);
       if (onProductoAgregado) onProductoAgregado();
     } catch (error) {
@@ -120,7 +107,6 @@ const precioLimpio = parseFloat(
             value={producto.name}
             onChange={handleChange}
             required
-            autoComplete="off"
           />
         </div>
 
@@ -134,7 +120,6 @@ const precioLimpio = parseFloat(
             value={producto.descriptin}
             onChange={handleChange}
             required
-            autoComplete="off"
           />
         </div>
 
@@ -147,59 +132,43 @@ const precioLimpio = parseFloat(
             placeholder="Precio único"
             value={producto.price}
             onChange={handleChange}
-            disabled={talles.some(
-              (t) => t.talle.trim() !== "" && t.precio !== ""
-            )}
+            disabled={talles.some(t => t.talle.trim() !== "" && t.precio !== "")}
           />
         </div>
 
         <fieldset>
           <legend>Precios por talle (opcional)</legend>
           {talles.map((talleObj, index) => (
-            <div key={index} style={{ marginBottom: "1rem" }}>
+            <div key={index}>
               <input
                 type="text"
                 placeholder="Talle"
                 value={talleObj.talle}
-                onChange={(e) =>
-                  handleTalleChange(index, "talle", e.target.value)
-                }
-                aria-label={`Talle ${index + 1}`}
+                onChange={(e) => handleTalleChange(index, "talle", e.target.value)}
               />
               <input
                 type="text"
                 placeholder="Precio"
                 value={talleObj.precio}
-                onChange={(e) =>
-                  handleTalleChange(index, "precio", e.target.value)
-                }
-                aria-label={`Precio para talle ${index + 1}`}
+                onChange={(e) => handleTalleChange(index, "precio", e.target.value)}
               />
               {talles.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => quitarTalle(index)}
-                  aria-label={`Quitar talle ${index + 1}`}
-                >
-                  Quitar
-                </button>
+                <button type="button" onClick={() => quitarTalle(index)}>Quitar</button>
               )}
             </div>
           ))}
-          <button type="button" onClick={agregarTalle}>
-            Agregar talle
-          </button>
+          <button type="button" onClick={agregarTalle}>Agregar talle</button>
         </fieldset>
 
         <div>
-          <label htmlFor="image">URL de la imagen</label>
-          <input
-            id="image"
-            type="url"
-            name="image"
-            placeholder="URL de la imagen"
-            value={producto.image}
+          <label htmlFor="images">URLs de imágenes (separadas por coma)</label>
+          <textarea
+            id="images"
+            name="images"
+            placeholder="https://img1.jpg, https://img2.jpg"
+            value={producto.images}
             onChange={handleChange}
+            rows={3}
             required
           />
         </div>

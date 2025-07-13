@@ -17,6 +17,7 @@ function ProductoDetalle() {
   const [cantidad, setCantidad] = useState(1);
   const [talleSeleccionado, setTalleSeleccionado] = useState("");
   const [precioTalle, setPrecioTalle] = useState(null);
+  const [imagenPrincipal, setImagenPrincipal] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
@@ -28,6 +29,10 @@ function ProductoDetalle() {
         if (docSnap.exists()) {
           const data = docSnap.data();
           setProducto(data);
+
+          if (data.images?.length) {
+            setImagenPrincipal(data.images[0]);
+          }
 
           if (data.prices) {
             const talles = Object.keys(data.prices);
@@ -51,26 +56,25 @@ function ProductoDetalle() {
   }, [id]);
 
   const funcionCarrito = () => {
-  if (cantidad < 1) return;
+    if (cantidad < 1) return;
 
-  const productoParaAgregar = {
-    ...producto,
-    id, // 👈 esto es clave para identificar correctamente
-    cantidad,
-    price: precioTalle,
-    talle: talleSeleccionado || "Único",
+    const productoParaAgregar = {
+      ...producto,
+      id,
+      cantidad,
+      price: precioTalle,
+      talle: talleSeleccionado || "Único",
+    };
+
+    dispararSweetBasico(
+      "Producto Agregado",
+      "El producto fue agregado al carrito con éxito",
+      "success",
+      "Cerrar"
+    );
+
+    agregarAlCarrito(productoParaAgregar);
   };
-
-  dispararSweetBasico(
-    "Producto Agregado",
-    "El producto fue agregado al carrito con éxito",
-    "success",
-    "Cerrar"
-  );
-
-  agregarAlCarrito(productoParaAgregar);
-};
-
 
   const seguirComprando = () => {
     navigate("/productos");
@@ -119,14 +123,14 @@ function ProductoDetalle() {
           property="og:description"
           content={producto.descriptin?.slice(0, 150)}
         />
-        <meta property="og:image" content={producto.image} />
+        <meta property="og:image" content={producto.images?.[0]} />
         <meta
           property="og:url"
-          content={`https://martial-market.netlify.app/productos/${producto.id}`}
+          content={`https://martial-market.netlify.app/productos/${id}`}
         />
         <link
           rel="canonical"
-          href={`https://martial-market.netlify.app/productos/${producto.id}`}
+          href={`https://martial-market.netlify.app/productos/${id}`}
         />
       </Helmet>
 
@@ -138,11 +142,25 @@ function ProductoDetalle() {
           >
             <Row>
               <Col md={6} className="text-center mb-3">
-                <img
-                  className="detalle-imagen"
-                  src={producto.image}
-                  alt={`Imagen del producto ${producto.name}`}
-                />
+                {imagenPrincipal && (
+                  <img
+                    className="detalle-imagen-principal"
+                    src={imagenPrincipal}
+                    alt={`Imagen principal de ${producto.name}`}
+                  />
+                )}
+
+                <div className="galeria-imagenes mt-3 d-flex justify-content-center flex-wrap gap-2">
+                  {producto.images?.map((img, idx) => (
+                    <img
+                      key={idx}
+                      src={img}
+                      alt={`${producto.name} imagen ${idx + 1}`}
+                      className="imagen-miniatura"
+                      onClick={() => setImagenPrincipal(img)}
+                    />
+                  ))}
+                </div>
               </Col>
 
               <Col md={6} className="detalle-info">
@@ -168,18 +186,12 @@ function ProductoDetalle() {
                       </Form.Select>
                     </Form.Group>
                     <h5 className="text-success fw-bold">
-                      ${Number(precioTalle).toLocaleString("es-AR", {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 3,
-                      })}
+                      ${Number(precioTalle).toLocaleString("es-AR")}
                     </h5>
                   </>
                 ) : (
                   <h5 className="text-success fw-bold">
-                    ${Number(producto.price).toLocaleString("es-AR", {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 3,
-                    })}
+                    ${Number(producto.price).toLocaleString("es-AR")}
                   </h5>
                 )}
 

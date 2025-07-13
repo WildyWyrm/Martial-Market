@@ -1,28 +1,14 @@
 import { useState, useEffect } from "react";
 import {
-    Container,
-    Form,
-    Button,
-    Card,
-    Row,
-    Col,
-    Image,
-    Pagination,
-    Alert,
-    InputGroup,
+    Container, Form, Button, Card, Row, Col, Image, Pagination,
+    Alert, InputGroup
 } from "react-bootstrap";
 import {
-    collection,
-    getDocs,
-    addDoc,
-    deleteDoc,
-    doc,
-    updateDoc,
+    collection, getDocs, addDoc, deleteDoc, doc, updateDoc
 } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import "../styles/Admin.css";
 
-// Función para formatear número con puntos de miles (mostrar)
 const formatearMiles = (valor) => {
     if (valor === null || valor === undefined) return "";
     const num = Number(valor.toString().replace(/\./g, "").replace(",", "."));
@@ -33,8 +19,6 @@ const formatearMiles = (valor) => {
     });
 };
 
-
-// Función para parsear string precio a número float (guardar)
 const parsearPrecio = (str) => {
     if (!str) return null;
     const limpio = str.toString().replace(/\./g, "").replace(",", ".");
@@ -46,18 +30,14 @@ function FormularioProducto({ onProductoAgregado }) {
     const [producto, setProducto] = useState({
         name: "",
         descriptin: "",
-        price: "", // precio unitario (para talle único)
-        image: "",
+        price: "",
+        images: "",
     });
-    const [talles, setTalles] = useState([]); // lista de talles para inputs
+    const [talles, setTalles] = useState([]);
 
-    // Manejo cambio campos simples
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        // Si es price, formatear para mostrar puntos (opcional)
         if (name === "price") {
-            // Permitimos solo números y puntos en el input
             const valorFormateado = value.replace(/[^0-9.]/g, "");
             setProducto({ ...producto, [name]: valorFormateado });
         } else {
@@ -65,42 +45,24 @@ function FormularioProducto({ onProductoAgregado }) {
         }
     };
 
-    // Agregar nuevo talle vacío para editar
-    const agregarTalle = () => {
-        setTalles([...talles, { talle: "", precio: "" }]);
-    };
-
-    // Quitar talle por índice
-    const quitarTalle = (index) => {
-        setTalles(talles.filter((_, i) => i !== index));
-    };
-
-    // Cambiar talle o precio dentro del arreglo de talles
+    const agregarTalle = () => setTalles([...talles, { talle: "", precio: "" }]);
+    const quitarTalle = (index) => setTalles(talles.filter((_, i) => i !== index));
     const handleTalleChange = (index, field, value) => {
         const nuevosTalles = [...talles];
-
-        // Para precio, permitir sólo números y puntos
-        if (field === "precio") {
-            const valorFormateado = value.replace(/[^0-9.]/g, "");
-            nuevosTalles[index][field] = valorFormateado;
-        } else {
-            nuevosTalles[index][field] = value;
-        }
-
+        nuevosTalles[index][field] = field === "precio"
+            ? value.replace(/[^0-9.]/g, "")
+            : value;
         setTalles(nuevosTalles);
     };
 
-    // Al enviar, procesamos talles en objeto si existen
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Filtrar talles válidos
         const tallesValidos = talles.filter(
             (t) => t.talle.trim() !== "" && t.precio.trim() !== "" && parsearPrecio(t.precio) !== null
         );
 
         let objetoPrices = null;
-
         if (tallesValidos.length > 0) {
             objetoPrices = tallesValidos.reduce((acc, curr) => {
                 acc[curr.talle.trim()] = parsearPrecio(curr.precio);
@@ -108,8 +70,14 @@ function FormularioProducto({ onProductoAgregado }) {
             }, {});
         }
 
-        const precioUnicoLimpio =
-            producto.price.trim() !== "" ? parsearPrecio(producto.price) : null;
+        const precioUnicoLimpio = producto.price.trim() !== ""
+            ? parsearPrecio(producto.price)
+            : null;
+
+        const imagenesArray = producto.images
+            .split(",")
+            .map((url) => url.trim())
+            .filter((url) => url !== "");
 
         try {
             await addDoc(collection(db, "productos"), {
@@ -117,10 +85,10 @@ function FormularioProducto({ onProductoAgregado }) {
                 descriptin: producto.descriptin,
                 price: objetoPrices ? null : precioUnicoLimpio,
                 prices: objetoPrices,
-                image: producto.image,
+                images: imagenesArray,
             });
             alert("Producto agregado exitosamente");
-            setProducto({ name: "", descriptin: "", price: "", image: "" });
+            setProducto({ name: "", descriptin: "", price: "", images: "" });
             setTalles([]);
             if (onProductoAgregado) onProductoAgregado();
         } catch (error) {
@@ -143,7 +111,6 @@ function FormularioProducto({ onProductoAgregado }) {
                             required
                         />
                     </Col>
-
                     <Col md={6}>
                         <Form.Control
                             type="text"
@@ -154,33 +121,30 @@ function FormularioProducto({ onProductoAgregado }) {
                             required
                         />
                     </Col>
-
-                    {/* Si hay talles, ocultamos el precio único */}
                     {talles.length === 0 && (
                         <Col md={6}>
                             <Form.Control
                                 type="text"
                                 name="price"
-                                placeholder="Precio (para talle único)"
+                                placeholder="Precio único"
                                 value={producto.price}
                                 onChange={handleChange}
-                                required={talles.length === 0}
                             />
                         </Col>
                     )}
-
                     <Col md={6}>
                         <Form.Control
-                            type="url"
-                            name="image"
-                            placeholder="URL de la imagen"
-                            value={producto.image}
+                            as="textarea"
+                            rows={2}
+                            name="images"
+                            placeholder="URL(s) de imágenes, separadas por coma"
+                            value={producto.images}
                             onChange={handleChange}
                             required
                         />
                     </Col>
 
-                    <Col md={12} className="mt-3">
+                    <Col md={12}>
                         <h5>Precios por talle (opcional)</h5>
                         {talles.map((t, index) => (
                             <Row key={index} className="mb-2 align-items-center">
@@ -190,7 +154,6 @@ function FormularioProducto({ onProductoAgregado }) {
                                         placeholder="Talle (ej: S, M, L)"
                                         value={t.talle}
                                         onChange={(e) => handleTalleChange(index, "talle", e.target.value)}
-                                        required
                                     />
                                 </Col>
                                 <Col md={5}>
@@ -201,24 +164,22 @@ function FormularioProducto({ onProductoAgregado }) {
                                             placeholder="Precio"
                                             value={t.precio}
                                             onChange={(e) => handleTalleChange(index, "precio", e.target.value)}
-                                            required
                                         />
                                     </InputGroup>
                                 </Col>
                                 <Col md={2}>
-                                    <Button variant="danger" onClick={() => quitarTalle(index)} title="Quitar talle">
+                                    <Button variant="danger" size="sm" onClick={() => quitarTalle(index)} style={{ minWidth: "30px" }}>
                                         X
                                     </Button>
                                 </Col>
                             </Row>
                         ))}
-
-                        <Button variant="secondary" onClick={agregarTalle}>
+                        <Button variant="secondary" size="sm" onClick={agregarTalle}>
                             Agregar talle
                         </Button>
                     </Col>
 
-                    <Col md={12} className="mt-4">
+                    <Col md={12}>
                         <Button type="submit" className="w-100" variant="success">
                             Agregar Producto
                         </Button>
@@ -234,38 +195,18 @@ export default function Admin() {
     const [paginaActual, setPaginaActual] = useState(1);
     const productosPorPagina = 5;
 
-    const [productoEditandoId, setProductoEditandoId] = useState(null);
-    const [productoEditandoDatos, setProductoEditandoDatos] = useState({
-        name: "",
-        descriptin: "",
-        price: "",
-        prices: {}, // objeto talles:precio
-        image: "",
-    });
+    // Para edición inline:
+    const [editandoId, setEditandoId] = useState(null);
+    const [productoEditando, setProductoEditando] = useState(null);
     const [tallesEditando, setTallesEditando] = useState([]);
 
-    const [verMasDescripcion, setVerMasDescripcion] = useState({});
-
-    const toggleVerMas = (id) => {
-        setVerMasDescripcion((prev) => ({
-            ...prev,
-            [id]: !prev[id],
-        }));
-    };
-
-    // Carga productos desde Firestore
     const fetchProductos = async () => {
         try {
-            const productosCol = collection(db, "productos");
-            const snapshot = await getDocs(productosCol);
-            const listaProductos = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setProductos(listaProductos);
+            const snapshot = await getDocs(collection(db, "productos"));
+            const lista = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+            setProductos(lista);
         } catch (error) {
-            console.error("Error al cargar productos", error);
-            alert("No se pudieron cargar los productos");
+            alert("Error al cargar productos");
         }
     };
 
@@ -277,109 +218,92 @@ export default function Admin() {
         try {
             await deleteDoc(doc(db, "productos", id));
             setProductos(productos.filter((p) => p.id !== id));
-            alert("Producto borrado correctamente");
         } catch (error) {
-            console.error("Error al borrar producto", error);
             alert("No se pudo borrar el producto");
         }
     };
 
+    // Inicia edición inline: copia el producto y sus talles (prices) a estado para editar
     const iniciarEdicion = (producto) => {
-        setProductoEditandoId(producto.id);
-        setProductoEditandoDatos({
-            name: producto.name || "",
-            descriptin: producto.descriptin || "",
-            price: producto.price ? formatearMiles(producto.price) : "",
-            prices: producto.prices || {},
-            image: producto.image || "",
+        setEditandoId(producto.id);
+        setProductoEditando({
+            ...producto,
+            price: producto.price || "",
+            images: producto.images ? producto.images.join(", ") : "",
         });
 
-        // Convertir objeto prices a array para edición con formato puntos
         if (producto.prices) {
-            const tallesArray = Object.entries(producto.prices).map(([talle, precio]) => ({
-                talle,
-                precio: formatearMiles(precio),
+            const tallesArr = Object.entries(producto.prices).map(([t, p]) => ({
+                talle: t,
+                precio: p.toString(),
             }));
-            setTallesEditando(tallesArray);
+            setTallesEditando(tallesArr);
         } else {
             setTallesEditando([]);
         }
     };
 
+    // Cancelar edición
     const cancelarEdicion = () => {
-        setProductoEditandoId(null);
-        setProductoEditandoDatos({ name: "", descriptin: "", price: "", prices: {}, image: "" });
+        setEditandoId(null);
+        setProductoEditando(null);
         setTallesEditando([]);
     };
 
-    const handleEditChange = (e) => {
-        const { name, value } = e.target;
-        if (name === "price") {
-            const valorFormateado = value.replace(/[^0-9.]/g, "");
-            setProductoEditandoDatos({
-                ...productoEditandoDatos,
-                [name]: valorFormateado,
-            });
-        } else {
-            setProductoEditandoDatos({
-                ...productoEditandoDatos,
-                [name]: value,
-            });
-        }
+    // Cambios en campos generales de producto
+    const handleChangeEdit = (field, value) => {
+        setProductoEditando({ ...productoEditando, [field]: value });
     };
 
-    const agregarTalleEdit = () => {
-        setTallesEditando([...tallesEditando, { talle: "", precio: "" }]);
-    };
-
-    const quitarTalleEdit = (index) => {
-        setTallesEditando(tallesEditando.filter((_, i) => i !== index));
-    };
-
-    const handleTalleEditChange = (index, field, value) => {
+    // Cambios en talles edición
+    const handleTalleChangeEdit = (index, field, value) => {
         const nuevosTalles = [...tallesEditando];
-        if (field === "precio") {
-            const valorFormateado = value.replace(/[^0-9.]/g, "");
-            nuevosTalles[index][field] = valorFormateado;
-        } else {
-            nuevosTalles[index][field] = value;
-        }
+        nuevosTalles[index][field] = value;
         setTallesEditando(nuevosTalles);
     };
 
+    const agregarTalleEdit = () => setTallesEditando([...tallesEditando, { talle: "", precio: "" }]);
+    const quitarTalleEdit = (index) => setTallesEditando(tallesEditando.filter((_, i) => i !== index));
+
+    // Guardar edición en Firestore
     const guardarEdicion = async () => {
+        if (!productoEditando) return;
+
+        const tallesValidos = tallesEditando.filter(
+            (t) => t.talle.trim() !== "" && t.precio.trim() !== "" && parsearPrecio(t.precio) !== null
+        );
+
+        let objetoPrices = null;
+        if (tallesValidos.length > 0) {
+            objetoPrices = tallesValidos.reduce((acc, curr) => {
+                acc[curr.talle.trim()] = parsearPrecio(curr.precio);
+                return acc;
+            }, {});
+        }
+
+        const precioUnicoLimpio = productoEditando.price.trim() !== ""
+            ? parsearPrecio(productoEditando.price)
+            : null;
+
+        const imagenesArray = productoEditando.images
+            .split(",")
+            .map((url) => url.trim())
+            .filter((url) => url !== "");
+
         try {
-            const tallesValidos = tallesEditando.filter(
-                (t) => t.talle.trim() !== "" && t.precio.trim() !== "" && parsearPrecio(t.precio) !== null
-            );
-
-            let objetoPrices = null;
-            if (tallesValidos.length > 0) {
-                objetoPrices = tallesValidos.reduce((acc, curr) => {
-                    acc[curr.talle.trim()] = parsearPrecio(curr.precio);
-                    return acc;
-                }, {});
-            }
-
-            const precioLimpio = productoEditandoDatos.price
-                ? parsearPrecio(productoEditandoDatos.price)
-                : null;
-
-            const docRef = doc(db, "productos", productoEditandoId);
-            await updateDoc(docRef, {
-                name: productoEditandoDatos.name,
-                descriptin: productoEditandoDatos.descriptin,
-                price: objetoPrices ? null : precioLimpio,
+            await updateDoc(doc(db, "productos", productoEditando.id), {
+                name: productoEditando.name.trim(),
+                descriptin: productoEditando.descriptin.trim(),
+                price: objetoPrices ? null : precioUnicoLimpio,
                 prices: objetoPrices,
-                image: productoEditandoDatos.image,
+                images: imagenesArray,
             });
-            alert("Producto actualizado correctamente");
-            setProductoEditandoId(null);
-            setTallesEditando([]);
+            alert("Producto actualizado exitosamente");
+            cancelarEdicion();
             fetchProductos();
         } catch (error) {
-            console.error("Error al actualizar producto", error);
-            alert("No se pudo actualizar el producto");
+            console.error("Error al actualizar producto:", error);
+            alert("Ocurrió un error al actualizar el producto");
         }
     };
 
@@ -393,146 +317,142 @@ export default function Admin() {
         <Container className="my-5">
             <h1 className="text-center mb-4">Panel de Administración</h1>
 
+            {/* Formulario para agregar productos nuevos */}
             <FormularioProducto onProductoAgregado={fetchProductos} />
 
-            <h2 className="mt-5">Productos existentes</h2>
+            <h2 className="mt-5">Productos</h2>
 
             {productos.length === 0 ? (
                 <Alert variant="info">No hay productos cargados.</Alert>
             ) : (
                 <>
-                    {productosMostrados.map((producto) => (
-                        <Card key={producto.id} className="mb-3">
-                            <Card.Body>
+                    {productosMostrados.map((producto) => {
+                        const esEditando = editandoId === producto.id;
+
+                        return (
+                            <Card key={producto.id} className="mb-3 p-3">
                                 <Row className="align-items-center">
-                                    <Col md={2} className="text-center mb-3 mb-md-0">
-                                        <Image
-                                            src={producto.image}
-                                            alt={producto.name}
-                                            rounded
-                                            fluid
-                                            style={{ maxHeight: "80px", objectFit: "cover" }}
-                                        />
+                                    <Col md={3} className="d-flex flex-wrap gap-2 col-md-3 justify-content-center">
+                                        {producto.images?.length > 0 ? (
+                                            producto.images.map((img, i) => (
+                                                <Image
+                                                    key={i}
+                                                    src={img}
+                                                    alt={`${producto.name} - imagen ${i + 1}`}
+                                                    fluid
+                                                    rounded
+                                                    style={{ maxHeight: "80px", marginRight: 4 }}
+                                                />
+                                            ))
+                                        ) : (
+                                            <span>Sin imagen</span>
+                                        )}
                                     </Col>
 
-                                    <Col md={7}>
-                                        {productoEditandoId === producto.id ? (
+                                    <Col md={6}>
+                                        {esEditando ? (
                                             <>
                                                 <Form.Control
-                                                    className="mb-2"
+                                                    size="sm"
                                                     type="text"
-                                                    name="name"
-                                                    value={productoEditandoDatos.name}
-                                                    onChange={handleEditChange}
-                                                    required
+                                                    value={productoEditando.name}
+                                                    onChange={(e) => handleChangeEdit("name", e.target.value)}
+                                                    className="mb-2"
+                                                    placeholder="Nombre"
                                                 />
                                                 <Form.Control
-                                                    className="mb-2"
+                                                    size="sm"
                                                     type="text"
-                                                    name="descriptin"
-                                                    value={productoEditandoDatos.descriptin}
-                                                    onChange={handleEditChange}
-                                                    required
+                                                    value={productoEditando.descriptin}
+                                                    onChange={(e) => handleChangeEdit("descriptin", e.target.value)}
+                                                    className="mb-2"
+                                                    placeholder="Descripción"
                                                 />
 
-                                                {/* Mostrar input precio único solo si no hay talles */}
+                                                {/* Precio único si no tiene talles */}
                                                 {tallesEditando.length === 0 && (
                                                     <Form.Control
-                                                        className="mb-2"
+                                                        size="sm"
                                                         type="text"
-                                                        name="price"
-                                                        placeholder="Precio (para talle único)"
-                                                        value={productoEditandoDatos.price}
-                                                        onChange={handleEditChange}
-                                                        required={tallesEditando.length === 0}
+                                                        value={productoEditando.price}
+                                                        onChange={(e) => handleChangeEdit("price", e.target.value)}
+                                                        className="mb-2"
+                                                        placeholder="Precio único"
                                                     />
                                                 )}
 
-                                                <Form.Control
-                                                    className="mb-2"
-                                                    type="text"
-                                                    name="image"
-                                                    value={productoEditandoDatos.image}
-                                                    onChange={handleEditChange}
-                                                    required
-                                                />
-
-                                                {/* Edición de talles */}
-                                                <div className="mb-3">
-                                                    <h6>Precios por talle (opcional)</h6>
-                                                    {tallesEditando.map((t, index) => (
-                                                        <Row key={index} className="mb-2 align-items-center">
-                                                            <Col md={5}>
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    placeholder="Talle (ej: S, M, L)"
-                                                                    value={t.talle}
-                                                                    onChange={(e) =>
-                                                                        handleTalleEditChange(index, "talle", e.target.value)
-                                                                    }
-                                                                    required
-                                                                />
-                                                            </Col>
-                                                            <Col md={5}>
-                                                                <InputGroup>
-                                                                    <InputGroup.Text>$</InputGroup.Text>
+                                                {/* Precios por talle */}
+                                                {tallesEditando.length > 0 && (
+                                                    <>
+                                                        <h6>Precios por talle</h6>
+                                                        {tallesEditando.map((t, i) => (
+                                                            <Row key={i} className="mb-1 align-items-center">
+                                                                <Col xs={5}>
                                                                     <Form.Control
+                                                                        size="sm"
                                                                         type="text"
-                                                                        placeholder="Precio"
-                                                                        value={t.precio}
-                                                                        onChange={(e) =>
-                                                                            handleTalleEditChange(index, "precio", e.target.value)
-                                                                        }
-                                                                        required
+                                                                        placeholder="Talle"
+                                                                        value={t.talle}
+                                                                        onChange={(e) => handleTalleChangeEdit(i, "talle", e.target.value)}
                                                                     />
-                                                                </InputGroup>
-                                                            </Col>
-                                                            <Col md={2}>
-                                                                <Button
-                                                                    variant="danger"
-                                                                    onClick={() => quitarTalleEdit(index)}
-                                                                    title="Quitar talle"
-                                                                >
-                                                                    X
-                                                                </Button>
-                                                            </Col>
-                                                        </Row>
-                                                    ))}
+                                                                </Col>
+                                                                <Col xs={5}>
+                                                                    <InputGroup>
+                                                                        <InputGroup.Text>$</InputGroup.Text>
+                                                                        <Form.Control
+                                                                            size="sm"
+                                                                            type="text"
+                                                                            placeholder="Precio"
+                                                                            value={t.precio}
+                                                                            onChange={(e) => handleTalleChangeEdit(i, "precio", e.target.value)}
+                                                                        />
+                                                                    </InputGroup>
+                                                                </Col>
+                                                                <Col xs={2}>
+                                                                    <Button
+                                                                        size="sm"
+                                                                        variant="danger"
+                                                                        onClick={() => quitarTalleEdit(i)}
+                                                                        style={{ minWidth: "30px" }}
+                                                                    >
+                                                                        X
+                                                                    </Button>
+                                                                </Col>
+                                                            </Row>
+                                                        ))}
+                                                        <Button
+                                                            size="sm"
+                                                            variant="secondary"
+                                                            onClick={agregarTalleEdit}
+                                                            className="mb-2"
+                                                        >
+                                                            Agregar talle
+                                                        </Button>
+                                                    </>
+                                                )}
 
-                                                    <Button variant="secondary" onClick={agregarTalleEdit}>
-                                                        Agregar talle
-                                                    </Button>
-                                                </div>
+                                                <Form.Control
+                                                    size="sm"
+                                                    as="textarea"
+                                                    rows={2}
+                                                    value={productoEditando.images}
+                                                    onChange={(e) => handleChangeEdit("images", e.target.value)}
+                                                    placeholder="URLs de imágenes, separadas por coma"
+                                                />
                                             </>
                                         ) : (
                                             <>
                                                 <h5>{producto.name}</h5>
-                                                <p className="mb-1 text-muted">
-                                                    {verMasDescripcion[producto.id]
-                                                        ? producto.descriptin
-                                                        : producto.descriptin?.length > 150
-                                                            ? producto.descriptin.slice(0, 150) + "..."
-                                                            : producto.descriptin}
-                                                    {producto.descriptin?.length > 150 && (
-                                                        <Button
-                                                            variant="link"
-                                                            className="p-0 ps-1"
-                                                            onClick={() => toggleVerMas(producto.id)}
-                                                        >
-                                                            {verMasDescripcion[producto.id] ? "Ver menos" : "Ver más"}
-                                                        </Button>
-                                                    )}
-                                                </p>
+                                                <p>{producto.descriptin}</p>
+                                                {producto.prices ? (
+<ul className="mb-0">
+  {Object.entries(producto.prices).map(([t, p]) => (
+    <li key={t}>
+      <strong>{t}: ${formatearMiles(p)}</strong>
+    </li>
+  ))}
+</ul>
 
-                                                {/* Mostrar precio único o listado de talles */}
-                                                {producto.prices && Object.keys(producto.prices).length > 0 ? (
-                                                    <ul>
-                                                        {Object.entries(producto.prices).map(([talle, precio]) => (
-                                                            <li key={talle}>
-                                                                <strong>{talle}:</strong> <strong>${formatearMiles(precio)}</strong>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
                                                 ) : (
                                                     <strong>${formatearMiles(producto.price)}</strong>
                                                 )}
@@ -540,47 +460,37 @@ export default function Admin() {
                                         )}
                                     </Col>
 
-                                    <Col md={3} className="text-md-end">
-                                        {productoEditandoId === producto.id ? (
+                                    <Col
+                                        xs="12"
+                                        md="auto"
+                                        className="d-flex flex-column gap-2 align-items-center align-items-md-end ms-md-auto"
+                                    >
+
+                                        {esEditando ? (
                                             <>
-                                                <Button
-                                                    variant="success"
-                                                    size="sm"
-                                                    onClick={guardarEdicion}
-                                                    className="me-2"
-                                                >
+                                                <Button size="sm" variant="success" onClick={guardarEdicion} style={{ minWidth: "90px" }}>
                                                     Guardar
                                                 </Button>
-                                                <Button variant="secondary" size="sm" onClick={cancelarEdicion}>
+                                                <Button size="sm" variant="outline-secondary" onClick={cancelarEdicion} style={{ minWidth: "90px" }}>
                                                     Cancelar
                                                 </Button>
                                             </>
                                         ) : (
                                             <>
-                                                <Button
-                                                    variant="primary"
-                                                    size="sm"
-                                                    className="me-2"
-                                                    onClick={() => iniciarEdicion(producto)}
-                                                >
+                                                <Button size="sm" variant="primary" onClick={() => iniciarEdicion(producto)} style={{ minWidth: "90px" }}>
                                                     Editar
                                                 </Button>
-                                                <Button
-                                                    variant="danger"
-                                                    size="sm"
-                                                    onClick={() => borrarProducto(producto.id)}
-                                                >
+                                                <Button size="sm" variant="danger" onClick={() => borrarProducto(producto.id)} style={{ minWidth: "90px" }}>
                                                     Borrar
                                                 </Button>
                                             </>
                                         )}
                                     </Col>
                                 </Row>
-                            </Card.Body>
-                        </Card>
-                    ))}
+                            </Card>
+                        );
+                    })}
 
-                    {/* Paginación */}
                     <Pagination className="justify-content-center mt-4 pb-4">
                         {Array.from({ length: totalPaginas }, (_, i) => (
                             <Pagination.Item

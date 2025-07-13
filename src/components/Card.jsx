@@ -21,12 +21,15 @@ function Card({ producto }) {
     precioMostrar = producto.price;
   }
 
+  // Usamos la primera imagen del array "images" o un fallback
+  const imagenPrincipal = producto.images?.[0] || producto.image || "https://via.placeholder.com/300x200?text=Sin+Imagen";
+
   return (
     <BCard as="article" className="producto-card text-center">
       <Link to={`/productos/${producto.id}`} className="mx-auto mt-3">
         <BCard.Img
           variant="top"
-          src={producto.image}
+          src={imagenPrincipal}
           alt={`Imagen del producto ${producto.name}`}
           className="producto-image"
         />
