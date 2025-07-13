@@ -75,12 +75,12 @@ export default function Carrito() {
                                                 <Card.Body>
                                                     <Row className="align-items-center text-md-start">
                                                         <Col xs={12} md={1} className="text-center mb-2 mb-md-0">
-<img
-  src={producto.images?.[0] || "/placeholder.jpg"}
-  alt={producto.name}
-  className="img-fluid rounded-circle"
-  style={{ maxWidth: "70px", height: "auto" }}
-/>
+                                                            <img
+                                                                src={producto.images?.[0] || "/placeholder.jpg"}
+                                                                alt={producto.name}
+                                                                className="img-fluid rounded-circle"
+                                                                style={{ maxWidth: "70px", height: "auto" }}
+                                                            />
 
                                                         </Col>
 

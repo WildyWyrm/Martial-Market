@@ -21,39 +21,46 @@ function ProductoDetalle() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    async function fetchProducto() {
-      try {
-        const docRef = doc(db, "productos", id);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setProducto(data);
+useEffect(() => {
+  async function fetchProducto() {
+    try {
+      const docRef = doc(db, "productos", id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
 
-          if (data.images?.length) {
-            setImagenPrincipal(data.images[0]);
-          }
-
-          if (data.prices) {
-            const talles = Object.keys(data.prices);
-            setTalleSeleccionado(talles[0]);
-            setPrecioTalle(data.prices[talles[0]]);
-          } else {
-            setPrecioTalle(data.price);
-          }
-        } else {
-          setError("Producto no encontrado.");
+        // ✅ Conversión del campo image (string) a images (array), si es necesario
+        if (data.image && !data.images) {
+          data.images = data.image.split(",").map((url) => url.trim());
         }
-      } catch (err) {
-        console.error("Error:", err);
-        setError("Hubo un error al obtener el producto.");
-      } finally {
-        setCargando(false);
-      }
-    }
 
-    fetchProducto();
-  }, [id]);
+        setProducto(data);
+
+        if (data.images?.length) {
+          setImagenPrincipal(data.images[0]);
+        }
+
+        if (data.prices) {
+          const talles = Object.keys(data.prices);
+          setTalleSeleccionado(talles[0]);
+          setPrecioTalle(data.prices[talles[0]]);
+        } else {
+          setPrecioTalle(data.price);
+        }
+      } else {
+        setError("Producto no encontrado.");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      setError("Hubo un error al obtener el producto.");
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  fetchProducto();
+}, [id]);
+
 
   const funcionCarrito = () => {
     if (cantidad < 1) return;
