@@ -161,6 +161,7 @@ function FormularioProducto({ onProductoAgregado }) {
                             <option value="Doboks">Doboks</option>
                             <option value="Protecciones">Protecciones</option>
                             <option value="Indumentaria">Indumentaria</option>
+                            <option value="Accesorios">Accesorios</option>
                             <option value="Elementos de entrenamiento">Elementos de entrenamiento</option>
                         </Form.Select>
                     </Col>
@@ -448,6 +449,7 @@ export default function Admin() {
                                                     <option value="Doboks">Doboks</option>
                                                     <option value="Protecciones">Protecciones</option>
                                                     <option value="Indumentaria">Indumentaria</option>
+                                                    <option value="Accesorios">Accesorios</option>
                                                     <option value="Elementos de entrenamiento">
                                                         Elementos de entrenamiento
                                                     </option>

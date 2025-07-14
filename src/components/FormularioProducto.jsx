@@ -140,6 +140,7 @@ export default function FormularioProducto({ onProductoAgregado }) {
               <option value="doboks">Doboks</option>
               <option value="protecciones">Protecciones</option>
               <option value="indumentaria">Indumentaria</option>
+              <option value="accesorios">Accesorios</option>
               <option value="entrenamiento">Elementos de entrenamiento</option>
             </Form.Select>
           </Col>
