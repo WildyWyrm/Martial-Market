@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+# No indexar páginas sensibles o internas (si existieran)
+Disallow: /admin
+Disallow: /carrito
+Disallow: /checkout
+
 Sitemap: https://martial-market.netlify.app/sitemap.xml
