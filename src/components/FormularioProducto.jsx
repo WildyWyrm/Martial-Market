@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
+import { Form, Button, Row, Col, Card, InputGroup } from "react-bootstrap";
 
 const formatearMiles = (valor) => {
   const limpio = valor.replace(/\D/g, "");
   if (!limpio) return "";
   return limpio.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};
+
+const parsearPrecio = (str) => {
+  if (!str) return null;
+  const limpio = str.toString().replace(/\./g, "").replace(",", ".");
+  const num = parseFloat(limpio);
+  return isNaN(num) ? null : num;
 };
 
 export default function FormularioProducto({ onProductoAgregado }) {
@@ -14,6 +22,7 @@ export default function FormularioProducto({ onProductoAgregado }) {
     descriptin: "",
     price: "",
     images: "",
+    category: "", // ✅ Nuevo campo categoría
   });
 
   const [talles, setTalles] = useState([{ talle: "", precio: "" }]);
@@ -77,12 +86,13 @@ export default function FormularioProducto({ onProductoAgregado }) {
         price: objetoPrices ? null : precioUnicoLimpio,
         prices: objetoPrices,
         images: imagenesArray,
+        category: producto.category || "", // ✅ Guardamos categoría
       };
 
       await addDoc(collection(db, "productos"), productoAGuardar);
 
       alert("Producto agregado exitosamente");
-      setProducto({ name: "", descriptin: "", price: "", images: "" });
+      setProducto({ name: "", descriptin: "", price: "", images: "", category: "" });
       setTalles([{ talle: "", precio: "" }]);
       if (onProductoAgregado) onProductoAgregado();
     } catch (error) {
@@ -94,89 +104,112 @@ export default function FormularioProducto({ onProductoAgregado }) {
   };
 
   return (
-    <section aria-label="Formulario para agregar productos">
-      <h2>Agregar nuevo producto</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Nombre del producto</label>
-          <input
-            id="name"
-            type="text"
-            name="name"
-            placeholder="Nombre del producto"
-            value={producto.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
+    <Card className="mb-4 p-4">
+      <Form onSubmit={handleSubmit}>
+        <Row className="g-3">
+          <Col md={6}>
+            <Form.Control
+              type="text"
+              name="name"
+              placeholder="Nombre del producto"
+              value={producto.name}
+              onChange={handleChange}
+              required
+            />
+          </Col>
 
-        <div>
-          <label htmlFor="descriptin">Descripción</label>
-          <input
-            id="descriptin"
-            type="text"
-            name="descriptin"
-            placeholder="Descripción"
-            value={producto.descriptin}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <Col md={6}>
+            <Form.Control
+              type="text"
+              name="descriptin"
+              placeholder="Descripción"
+              value={producto.descriptin}
+              onChange={handleChange}
+              required
+            />
+          </Col>
 
-        <div>
-          <label htmlFor="price">Precio único (dejar vacío si hay talles)</label>
-          <input
-            id="price"
-            type="text"
-            name="price"
-            placeholder="Precio único"
-            value={producto.price}
-            onChange={handleChange}
-            disabled={talles.some(t => t.talle.trim() !== "" && t.precio !== "")}
-          />
-        </div>
+          <Col md={6}>
+            <Form.Select
+              name="category"
+              value={producto.category}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Seleccionar categoría</option>
+              <option value="doboks">Doboks</option>
+              <option value="protecciones">Protecciones</option>
+              <option value="indumentaria">Indumentaria</option>
+              <option value="entrenamiento">Elementos de entrenamiento</option>
+            </Form.Select>
+          </Col>
 
-        <fieldset>
-          <legend>Precios por talle (opcional)</legend>
-          {talles.map((talleObj, index) => (
-            <div key={index}>
-              <input
+          {talles.length === 0 && (
+            <Col md={6}>
+              <Form.Control
                 type="text"
-                placeholder="Talle"
-                value={talleObj.talle}
-                onChange={(e) => handleTalleChange(index, "talle", e.target.value)}
+                name="price"
+                placeholder="Precio único"
+                value={producto.price}
+                onChange={handleChange}
               />
-              <input
-                type="text"
-                placeholder="Precio"
-                value={talleObj.precio}
-                onChange={(e) => handleTalleChange(index, "precio", e.target.value)}
-              />
-              {talles.length > 1 && (
-                <button type="button" onClick={() => quitarTalle(index)}>Quitar</button>
-              )}
-            </div>
-          ))}
-          <button type="button" onClick={agregarTalle}>Agregar talle</button>
-        </fieldset>
+            </Col>
+          )}
 
-        <div>
-          <label htmlFor="images">URLs de imágenes (separadas por coma)</label>
-          <textarea
-            id="images"
-            name="images"
-            placeholder="https://img1.jpg, https://img2.jpg"
-            value={producto.images}
-            onChange={handleChange}
-            rows={3}
-            required
-          />
-        </div>
+          <Col md={6}>
+            <Form.Control
+              as="textarea"
+              rows={2}
+              name="images"
+              placeholder="URL(s) de imágenes, separadas por coma"
+              value={producto.images}
+              onChange={handleChange}
+              required
+            />
+          </Col>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Agregando..." : "Agregar Producto"}
-        </button>
-      </form>
-    </section>
+          <Col md={12}>
+            <h5>Precios por talle (opcional)</h5>
+            {talles.map((t, index) => (
+              <Row key={index} className="mb-2 align-items-center">
+                <Col md={5}>
+                  <Form.Control
+                    type="text"
+                    placeholder="Talle (ej: S, M, L)"
+                    value={t.talle}
+                    onChange={(e) => handleTalleChange(index, "talle", e.target.value)}
+                  />
+                </Col>
+                <Col md={5}>
+                  <InputGroup>
+                    <InputGroup.Text>$</InputGroup.Text>
+                    <Form.Control
+                      type="text"
+                      placeholder="Precio"
+                      value={t.precio}
+                      onChange={(e) => handleTalleChange(index, "precio", e.target.value)}
+                    />
+                  </InputGroup>
+                </Col>
+                <Col md={2}>
+                  <Button variant="danger" size="sm" onClick={() => quitarTalle(index)} style={{ minWidth: "30px" }}>
+                    X
+                  </Button>
+                </Col>
+              </Row>
+            ))}
+            <Button variant="secondary" size="sm" onClick={agregarTalle}>
+              Agregar talle
+            </Button>
+          </Col>
+
+          <Col md={12}>
+            <Button type="submit" className="w-100" variant="success" disabled={loading}>
+              {loading ? "Agregando..." : "Agregar Producto"}
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+    </Card>
   );
 }

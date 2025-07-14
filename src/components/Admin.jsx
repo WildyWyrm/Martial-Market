@@ -1,10 +1,23 @@
 import { useState, useEffect } from "react";
 import {
-    Container, Form, Button, Card, Row, Col, Image, Pagination,
-    Alert, InputGroup
+    Container,
+    Form,
+    Button,
+    Card,
+    Row,
+    Col,
+    Image,
+    Pagination,
+    Alert,
+    InputGroup,
 } from "react-bootstrap";
 import {
-    collection, getDocs, addDoc, deleteDoc, doc, updateDoc
+    collection,
+    getDocs,
+    addDoc,
+    deleteDoc,
+    doc,
+    updateDoc,
 } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import "../styles/Admin.css";
@@ -34,7 +47,9 @@ function FormularioProducto({ onProductoAgregado }) {
         descriptin: "",
         price: "",
         images: "",
+        category: "", // ✅ NUEVO
     });
+
     const [talles, setTalles] = useState([]);
 
     const handleChange = (e) => {
@@ -49,6 +64,7 @@ function FormularioProducto({ onProductoAgregado }) {
 
     const agregarTalle = () => setTalles([...talles, { talle: "", precio: "" }]);
     const quitarTalle = (index) => setTalles(talles.filter((_, i) => i !== index));
+
     const handleTalleChange = (index, field, value) => {
         const nuevosTalles = [...talles];
         nuevosTalles[index][field] = field === "precio"
@@ -88,9 +104,18 @@ function FormularioProducto({ onProductoAgregado }) {
                 price: objetoPrices ? null : precioUnicoLimpio,
                 prices: objetoPrices,
                 images: imagenesArray,
+                category: producto.category || null, // ✅ SE GUARDA
             });
+
             alert("Producto agregado exitosamente");
-            setProducto({ name: "", descriptin: "", price: "", images: "" });
+
+            setProducto({
+                name: "",
+                descriptin: "",
+                price: "",
+                images: "",
+                category: "", // ✅ resetear también
+            });
             setTalles([]);
             if (onProductoAgregado) onProductoAgregado();
         } catch (error) {
@@ -123,6 +148,23 @@ function FormularioProducto({ onProductoAgregado }) {
                             required
                         />
                     </Col>
+
+                    {/* ✅ Select de categoría */}
+                    <Col md={6}>
+                        <Form.Select
+                            name="category"
+                            value={producto.category}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Seleccionar categoría</option>
+                            <option value="Doboks">Doboks</option>
+                            <option value="Protecciones">Protecciones</option>
+                            <option value="Indumentaria">Indumentaria</option>
+                            <option value="Elementos de entrenamiento">Elementos de entrenamiento</option>
+                        </Form.Select>
+                    </Col>
+
                     {talles.length === 0 && (
                         <Col md={6}>
                             <Form.Control
@@ -134,6 +176,7 @@ function FormularioProducto({ onProductoAgregado }) {
                             />
                         </Col>
                     )}
+
                     <Col md={6}>
                         <Form.Control
                             as="textarea"
@@ -192,6 +235,7 @@ function FormularioProducto({ onProductoAgregado }) {
     );
 }
 
+
 // Componente principal Admin
 export default function Admin() {
     const [productos, setProductos] = useState([]);
@@ -202,7 +246,7 @@ export default function Admin() {
     const [productoEditando, setProductoEditando] = useState(null);
     const [tallesEditando, setTallesEditando] = useState([]);
 
-    // ✅ CORREGIDO: Detectar si tiene 'image' en lugar de 'images'
+    // Traer productos de Firebase
     const fetchProductos = async () => {
         try {
             const snapshot = await getDocs(collection(db, "productos"));
@@ -272,14 +316,19 @@ export default function Admin() {
         setTallesEditando(nuevosTalles);
     };
 
-    const agregarTalleEdit = () => setTallesEditando([...tallesEditando, { talle: "", precio: "" }]);
-    const quitarTalleEdit = (index) => setTallesEditando(tallesEditando.filter((_, i) => i !== index));
+    const agregarTalleEdit = () =>
+        setTallesEditando([...tallesEditando, { talle: "", precio: "" }]);
+    const quitarTalleEdit = (index) =>
+        setTallesEditando(tallesEditando.filter((_, i) => i !== index));
 
     const guardarEdicion = async () => {
         if (!productoEditando) return;
 
         const tallesValidos = tallesEditando.filter(
-            (t) => t.talle.trim() !== "" && t.precio.trim() !== "" && parsearPrecio(t.precio) !== null
+            (t) =>
+                t.talle.trim() !== "" &&
+                t.precio.trim() !== "" &&
+                parsearPrecio(t.precio) !== null
         );
 
         let objetoPrices = null;
@@ -290,9 +339,10 @@ export default function Admin() {
             }, {});
         }
 
-        const precioUnicoLimpio = productoEditando.price.trim() !== ""
-            ? parsearPrecio(productoEditando.price)
-            : null;
+        const precioUnicoLimpio =
+            productoEditando.price.trim() !== ""
+                ? parsearPrecio(productoEditando.price)
+                : null;
 
         const imagenesArray = productoEditando.images
             .split(",")
@@ -306,6 +356,7 @@ export default function Admin() {
                 price: objetoPrices ? null : precioUnicoLimpio,
                 prices: objetoPrices,
                 images: imagenesArray,
+                category: productoEditando.category || null,
             });
             alert("Producto actualizado exitosamente");
             cancelarEdicion();
@@ -340,7 +391,10 @@ export default function Admin() {
                         return (
                             <Card key={producto.id} className="mb-3 p-3">
                                 <Row className="align-items-center">
-                                    <Col md={3} className="d-flex flex-wrap gap-2 justify-content-center">
+                                    <Col
+                                        md={3}
+                                        className="d-flex flex-wrap gap-2 justify-content-center"
+                                    >
                                         {producto.images?.length > 0 ? (
                                             producto.images.map((img, i) => (
                                                 <Image
@@ -364,25 +418,49 @@ export default function Admin() {
                                                     size="sm"
                                                     type="text"
                                                     value={productoEditando.name}
-                                                    onChange={(e) => handleChangeEdit("name", e.target.value)}
+                                                    onChange={(e) =>
+                                                        handleChangeEdit("name", e.target.value)
+                                                    }
                                                     className="mb-2"
-                                                    placeholder="Nombre"
+                                                    placeholder="Nombre del producto"
                                                 />
+
                                                 <Form.Control
                                                     size="sm"
                                                     type="text"
                                                     value={productoEditando.descriptin}
-                                                    onChange={(e) => handleChangeEdit("descriptin", e.target.value)}
+                                                    onChange={(e) =>
+                                                        handleChangeEdit("descriptin", e.target.value)
+                                                    }
                                                     className="mb-2"
                                                     placeholder="Descripción"
                                                 />
+
+                                                <Form.Select
+                                                    size="sm"
+                                                    value={productoEditando.category || ""}
+                                                    onChange={(e) =>
+                                                        handleChangeEdit("category", e.target.value)
+                                                    }
+                                                    className="mb-2"
+                                                >
+                                                    <option value="">Seleccionar categoría</option>
+                                                    <option value="Doboks">Doboks</option>
+                                                    <option value="Protecciones">Protecciones</option>
+                                                    <option value="Indumentaria">Indumentaria</option>
+                                                    <option value="Elementos de entrenamiento">
+                                                        Elementos de entrenamiento
+                                                    </option>
+                                                </Form.Select>
 
                                                 {tallesEditando.length === 0 && (
                                                     <Form.Control
                                                         size="sm"
                                                         type="text"
                                                         value={productoEditando.price}
-                                                        onChange={(e) => handleChangeEdit("price", e.target.value)}
+                                                        onChange={(e) =>
+                                                            handleChangeEdit("price", e.target.value)
+                                                        }
                                                         className="mb-2"
                                                         placeholder="Precio único"
                                                     />
@@ -392,14 +470,19 @@ export default function Admin() {
                                                     <>
                                                         <h6>Precios por talle</h6>
                                                         {tallesEditando.map((t, i) => (
-                                                            <Row key={i} className="mb-1 align-items-center">
+                                                            <Row
+                                                                key={i}
+                                                                className="mb-1 align-items-center"
+                                                            >
                                                                 <Col xs={5}>
                                                                     <Form.Control
                                                                         size="sm"
                                                                         type="text"
                                                                         placeholder="Talle"
                                                                         value={t.talle}
-                                                                        onChange={(e) => handleTalleChangeEdit(i, "talle", e.target.value)}
+                                                                        onChange={(e) =>
+                                                                            handleTalleChangeEdit(i, "talle", e.target.value)
+                                                                        }
                                                                     />
                                                                 </Col>
                                                                 <Col xs={5}>
@@ -410,7 +493,9 @@ export default function Admin() {
                                                                             type="text"
                                                                             placeholder="Precio"
                                                                             value={t.precio}
-                                                                            onChange={(e) => handleTalleChangeEdit(i, "precio", e.target.value)}
+                                                                            onChange={(e) =>
+                                                                                handleTalleChangeEdit(i, "precio", e.target.value)
+                                                                            }
                                                                         />
                                                                     </InputGroup>
                                                                 </Col>
@@ -442,7 +527,9 @@ export default function Admin() {
                                                     as="textarea"
                                                     rows={2}
                                                     value={productoEditando.images}
-                                                    onChange={(e) => handleChangeEdit("images", e.target.value)}
+                                                    onChange={(e) =>
+                                                        handleChangeEdit("images", e.target.value)
+                                                    }
                                                     placeholder="URLs de imágenes, separadas por coma"
                                                 />
                                             </>
@@ -454,7 +541,9 @@ export default function Admin() {
                                                     <ul className="mb-0">
                                                         {Object.entries(producto.prices).map(([t, p]) => (
                                                             <li key={t}>
-                                                                <strong>{t}: ${formatearMiles(p)}</strong>
+                                                                <strong>
+                                                                    {t}: ${formatearMiles(p)}
+                                                                </strong>
                                                             </li>
                                                         ))}
                                                     </ul>
@@ -472,19 +561,39 @@ export default function Admin() {
                                     >
                                         {esEditando ? (
                                             <>
-                                                <Button size="sm" variant="success" onClick={guardarEdicion} style={{ minWidth: "90px" }}>
+                                                <Button
+                                                    size="sm"
+                                                    variant="success"
+                                                    onClick={guardarEdicion}
+                                                    style={{ minWidth: "90px" }}
+                                                >
                                                     Guardar
                                                 </Button>
-                                                <Button size="sm" variant="outline-secondary" onClick={cancelarEdicion} style={{ minWidth: "90px" }}>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline-secondary"
+                                                    onClick={cancelarEdicion}
+                                                    style={{ minWidth: "90px" }}
+                                                >
                                                     Cancelar
                                                 </Button>
                                             </>
                                         ) : (
                                             <>
-                                                <Button size="sm" variant="primary" onClick={() => iniciarEdicion(producto)} style={{ minWidth: "90px" }}>
+                                                <Button
+                                                    size="sm"
+                                                    variant="primary"
+                                                    onClick={() => iniciarEdicion(producto)}
+                                                    style={{ minWidth: "90px" }}
+                                                >
                                                     Editar
                                                 </Button>
-                                                <Button size="sm" variant="danger" onClick={() => borrarProducto(producto.id)} style={{ minWidth: "90px" }}>
+                                                <Button
+                                                    size="sm"
+                                                    variant="danger"
+                                                    onClick={() => borrarProducto(producto.id)}
+                                                    style={{ minWidth: "90px" }}
+                                                >
                                                     Borrar
                                                 </Button>
                                             </>
