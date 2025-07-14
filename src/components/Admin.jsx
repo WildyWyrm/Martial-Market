@@ -9,6 +9,7 @@ import {
 import { db } from "../services/firebaseConfig";
 import "../styles/Admin.css";
 
+// Formateo de precios
 const formatearMiles = (valor) => {
     if (valor === null || valor === undefined) return "";
     const num = Number(valor.toString().replace(/\./g, "").replace(",", "."));
@@ -26,6 +27,7 @@ const parsearPrecio = (str) => {
     return isNaN(num) ? null : num;
 };
 
+// Componente para formulario
 function FormularioProducto({ onProductoAgregado }) {
     const [producto, setProducto] = useState({
         name: "",
@@ -190,20 +192,32 @@ function FormularioProducto({ onProductoAgregado }) {
     );
 }
 
+// Componente principal Admin
 export default function Admin() {
     const [productos, setProductos] = useState([]);
     const [paginaActual, setPaginaActual] = useState(1);
     const productosPorPagina = 5;
 
-    // Para edición inline:
     const [editandoId, setEditandoId] = useState(null);
     const [productoEditando, setProductoEditando] = useState(null);
     const [tallesEditando, setTallesEditando] = useState([]);
 
+    // ✅ CORREGIDO: Detectar si tiene 'image' en lugar de 'images'
     const fetchProductos = async () => {
         try {
             const snapshot = await getDocs(collection(db, "productos"));
-            const lista = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+            const lista = snapshot.docs.map((doc) => {
+                const data = doc.data();
+
+                if (data.image && !data.images) {
+                    data.images = data.image
+                        .split(",")
+                        .map((url) => url.trim())
+                        .filter((url) => url !== "");
+                }
+
+                return { id: doc.id, ...data };
+            });
             setProductos(lista);
         } catch (error) {
             alert("Error al cargar productos");
@@ -223,7 +237,6 @@ export default function Admin() {
         }
     };
 
-    // Inicia edición inline: copia el producto y sus talles (prices) a estado para editar
     const iniciarEdicion = (producto) => {
         setEditandoId(producto.id);
         setProductoEditando({
@@ -243,19 +256,16 @@ export default function Admin() {
         }
     };
 
-    // Cancelar edición
     const cancelarEdicion = () => {
         setEditandoId(null);
         setProductoEditando(null);
         setTallesEditando([]);
     };
 
-    // Cambios en campos generales de producto
     const handleChangeEdit = (field, value) => {
         setProductoEditando({ ...productoEditando, [field]: value });
     };
 
-    // Cambios en talles edición
     const handleTalleChangeEdit = (index, field, value) => {
         const nuevosTalles = [...tallesEditando];
         nuevosTalles[index][field] = value;
@@ -265,7 +275,6 @@ export default function Admin() {
     const agregarTalleEdit = () => setTallesEditando([...tallesEditando, { talle: "", precio: "" }]);
     const quitarTalleEdit = (index) => setTallesEditando(tallesEditando.filter((_, i) => i !== index));
 
-    // Guardar edición en Firestore
     const guardarEdicion = async () => {
         if (!productoEditando) return;
 
@@ -317,7 +326,6 @@ export default function Admin() {
         <Container className="my-5">
             <h1 className="text-center mb-4">Panel de Administración</h1>
 
-            {/* Formulario para agregar productos nuevos */}
             <FormularioProducto onProductoAgregado={fetchProductos} />
 
             <h2 className="mt-5">Productos</h2>
@@ -332,7 +340,7 @@ export default function Admin() {
                         return (
                             <Card key={producto.id} className="mb-3 p-3">
                                 <Row className="align-items-center">
-                                    <Col md={3} className="d-flex flex-wrap gap-2 col-md-3 justify-content-center">
+                                    <Col md={3} className="d-flex flex-wrap gap-2 justify-content-center">
                                         {producto.images?.length > 0 ? (
                                             producto.images.map((img, i) => (
                                                 <Image
@@ -369,7 +377,6 @@ export default function Admin() {
                                                     placeholder="Descripción"
                                                 />
 
-                                                {/* Precio único si no tiene talles */}
                                                 {tallesEditando.length === 0 && (
                                                     <Form.Control
                                                         size="sm"
@@ -381,7 +388,6 @@ export default function Admin() {
                                                     />
                                                 )}
 
-                                                {/* Precios por talle */}
                                                 {tallesEditando.length > 0 && (
                                                     <>
                                                         <h6>Precios por talle</h6>
@@ -445,14 +451,13 @@ export default function Admin() {
                                                 <h5>{producto.name}</h5>
                                                 <p>{producto.descriptin}</p>
                                                 {producto.prices ? (
-<ul className="mb-0">
-  {Object.entries(producto.prices).map(([t, p]) => (
-    <li key={t}>
-      <strong>{t}: ${formatearMiles(p)}</strong>
-    </li>
-  ))}
-</ul>
-
+                                                    <ul className="mb-0">
+                                                        {Object.entries(producto.prices).map(([t, p]) => (
+                                                            <li key={t}>
+                                                                <strong>{t}: ${formatearMiles(p)}</strong>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
                                                 ) : (
                                                     <strong>${formatearMiles(producto.price)}</strong>
                                                 )}
@@ -465,7 +470,6 @@ export default function Admin() {
                                         md="auto"
                                         className="d-flex flex-column gap-2 align-items-center align-items-md-end ms-md-auto"
                                     >
-
                                         {esEditando ? (
                                             <>
                                                 <Button size="sm" variant="success" onClick={guardarEdicion} style={{ minWidth: "90px" }}>

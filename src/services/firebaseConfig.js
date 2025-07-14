@@ -4,13 +4,13 @@ import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBD3NchEw-qJcMFQeIpO2EkMri0ul3pHgE",
-  authDomain: "martialmarket-e1bcf.firebaseapp.com",
-  projectId: "martialmarket-e1bcf",
-  storageBucket: "martialmarket-e1bcf.firebasestorage.app",
-  messagingSenderId: "649072722584",
-  appId: "1:649072722584:web:299bfb7db7e45b8eee06ed",
-  measurementId: "G-RFVLPP2V0K",
+    apiKey: "AIzaSyBD3NchEw-qJcMFQeIpO2EkMri0ul3pHgE",
+    authDomain: "martialmarket-e1bcf.firebaseapp.com",
+    projectId: "martialmarket-e1bcf",
+    storageBucket: "martialmarket-e1bcf.firebasestorage.app",
+    messagingSenderId: "649072722584",
+    appId: "1:649072722584:web:299bfb7db7e45b8eee06ed",
+    measurementId: "G-RFVLPP2V0K",
 };
 
 // Inicializa Firebase solo si no hay ninguna app inicializada
