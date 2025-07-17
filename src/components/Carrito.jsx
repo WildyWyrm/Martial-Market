@@ -145,7 +145,7 @@ export default function Carrito() {
 
                             <div className="d-flex justify-content-center mt-5">
                                 <a
-                                    href={`https://wa.me/+541164334499?text=¡Hola!%20Estuve%20viendo%20productos%20en%20Martial%20Market%20y%20quisiera%20finalizar%20mi%20compra.%20¿Podrías%20ayudarme%20con%20los%20pasos%20siguientes?`}
+                                    href={`https://wa.me/+541121655127?text=¡Hola!%20Estuve%20viendo%20productos%20en%20Martial%20Market%20y%20quisiera%20finalizar%20mi%20compra.%20¿Podrías%20ayudarme%20con%20los%20pasos%20siguientes?`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     style={{ textDecoration: "none" }}
