@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import "../styles/Productos.css";
 import Card from "./Card";
-import { Container, Row, Col, Form, Pagination } from "react-bootstrap";
+import {
+    Container,
+    Row,
+    Col,
+    Form,
+    Pagination,
+    InputGroup,
+} from "react-bootstrap";
 import { db } from "../services/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
@@ -31,7 +38,6 @@ function ProductosContainer() {
         fetchProductos();
     }, []);
 
-    // Obtener categorías únicas desde los productos
     const categorias = ["Todos", ...new Set(productos.map(p => p.category).filter(Boolean))];
 
     const handleBusquedaChange = (e) => {
@@ -46,7 +52,8 @@ function ProductosContainer() {
 
     const productosFiltrados = productos.filter((producto) => {
         const coincideBusqueda = producto.name.toLowerCase().includes(busqueda.toLowerCase());
-        const coincideCategoria = categoriaSeleccionada === "Todos" || producto.category === categoriaSeleccionada;
+        const coincideCategoria =
+            categoriaSeleccionada === "Todos" || producto.category === categoriaSeleccionada;
         return coincideBusqueda && coincideCategoria;
     });
 
@@ -57,11 +64,19 @@ function ProductosContainer() {
     );
 
     if (cargando) {
-        return <p role="status" aria-live="polite" aria-busy="true">Cargando productos...</p>;
+        return (
+            <p role="status" aria-live="polite" aria-busy="true">
+                Cargando productos...
+            </p>
+        );
     }
 
     if (error) {
-        return <p role="alert" aria-live="assertive" style={{ color: "red" }}>{error}</p>;
+        return (
+            <p role="alert" aria-live="assertive" style={{ color: "red" }}>
+                {error}
+            </p>
+        );
     }
 
     return (
@@ -70,14 +85,19 @@ function ProductosContainer() {
                 {/* Filtros: búsqueda y categoría */}
                 <Row className="mb-4">
                     <Col md={6} className="mb-2">
-                        <Form.Control
-                            className="busqueda-input"
-                            type="text"
-                            placeholder="Buscar productos..."
-                            value={busqueda}
-                            onChange={handleBusquedaChange}
-                            aria-label="Buscar productos"
-                        />
+                        <InputGroup>
+                            <InputGroup.Text>
+                                <i className="bi bi-search" aria-hidden="true"></i>
+                            </InputGroup.Text>
+                            <Form.Control
+                                className="busqueda-input"
+                                type="text"
+                                placeholder="Buscar productos..."
+                                value={busqueda}
+                                onChange={handleBusquedaChange}
+                                aria-label="Buscar productos"
+                            />
+                        </InputGroup>
                     </Col>
                     <Col md={6} className="mb-2">
                         <Form.Select
@@ -86,7 +106,9 @@ function ProductosContainer() {
                             aria-label="Filtrar por categoría"
                         >
                             {categorias.map((cat, i) => (
-                                <option key={i} value={cat}>{cat}</option>
+                                <option key={i} value={cat}>
+                                    {cat}
+                                </option>
                             ))}
                         </Form.Select>
                     </Col>
@@ -127,7 +149,9 @@ function ProductosContainer() {
                         </Pagination>
                     </>
                 ) : (
-                    <p role="alert" aria-live="assertive">No se encontraron productos.</p>
+                    <p role="alert" aria-live="assertive">
+                        No se encontraron productos.
+                    </p>
                 )}
             </Container>
         </main>

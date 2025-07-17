@@ -162,6 +162,7 @@ function FormularioProducto({ onProductoAgregado }) {
                             <option value="Protecciones">Protecciones</option>
                             <option value="Indumentaria">Indumentaria</option>
                             <option value="Accesorios">Accesorios</option>
+                            <option value="Bolsas">Bolsas</option>
                             <option value="Elementos de entrenamiento">Elementos de entrenamiento</option>
                         </Form.Select>
                     </Col>
@@ -450,9 +451,8 @@ export default function Admin() {
                                                     <option value="Protecciones">Protecciones</option>
                                                     <option value="Indumentaria">Indumentaria</option>
                                                     <option value="Accesorios">Accesorios</option>
-                                                    <option value="Elementos de entrenamiento">
-                                                        Elementos de entrenamiento
-                                                    </option>
+                                                    <option value="Bolsas">Bolsas</option>
+                                                    <option value="Elementos de entrenamiento">Elementos de entrenamiento</option>
                                                 </Form.Select>
 
                                                 {tallesEditando.length === 0 && (

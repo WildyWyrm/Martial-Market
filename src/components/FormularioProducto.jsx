@@ -65,10 +65,10 @@ export default function FormularioProducto({ onProductoAgregado }) {
 
       const objetoPrices = tallesValidos.length > 0
         ? tallesValidos.reduce((acc, curr) => {
-            const precioLimpio = parseFloat(curr.precio.replace(/\./g, "").replace(",", "."));
-            acc[curr.talle.trim()] = precioLimpio;
-            return acc;
-          }, {})
+          const precioLimpio = parseFloat(curr.precio.replace(/\./g, "").replace(",", "."));
+          acc[curr.talle.trim()] = precioLimpio;
+          return acc;
+        }, {})
         : null;
 
       const precioUnicoLimpio = producto.price
@@ -137,11 +137,12 @@ export default function FormularioProducto({ onProductoAgregado }) {
               required
             >
               <option value="">Seleccionar categoría</option>
-              <option value="doboks">Doboks</option>
-              <option value="protecciones">Protecciones</option>
-              <option value="indumentaria">Indumentaria</option>
-              <option value="accesorios">Accesorios</option>
-              <option value="entrenamiento">Elementos de entrenamiento</option>
+              <option value="Doboks">Doboks</option>
+              <option value="Protecciones">Protecciones</option>
+              <option value="Indumentaria">Indumentaria</option>
+              <option value="Accesorios">Accesorios</option>
+              <option value="Bolsas">Bolsas</option>
+              <option value="Elementos de entrenamiento">Elementos de entrenamiento</option>
             </Form.Select>
           </Col>
 
