@@ -40,3 +40,18 @@
   font-size: 1rem;
 }
 
+select.categoria-select.form-select {
+  background-color: #f0f9ff;
+  border: 2px solid #337ab7;
+  color: #033c6e;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+select.categoria-select.form-select:focus {
+  border-color: #5a8abb;
+  box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+  outline: none;
+}
+
+

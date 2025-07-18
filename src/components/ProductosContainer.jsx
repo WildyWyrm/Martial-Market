@@ -101,6 +101,7 @@ function ProductosContainer() {
                     </Col>
                     <Col md={6} className="mb-2">
                         <Form.Select
+                            className="categoria-select"
                             value={categoriaSeleccionada}
                             onChange={(e) => handleCategoriaChange(e.target.value)}
                             aria-label="Filtrar por categoría"
@@ -111,6 +112,7 @@ function ProductosContainer() {
                                 </option>
                             ))}
                         </Form.Select>
+
                     </Col>
                 </Row>
 
