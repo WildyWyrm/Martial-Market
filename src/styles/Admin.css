@@ -3,3 +3,28 @@ ul {
   padding-left: 0;
   margin: 0;
 }
+
+/* Para evitar desborde horizontal */
+body {
+  overflow-x: hidden;
+}
+
+/* Para que la paginación se mantenga dentro del contenedor */
+.pagination {
+  flex-wrap: wrap;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Asegurar que el contenedor no se desborde */
+.container {
+  max-width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+  box-sizing: border-box;
+}
+
+.card {
+  overflow-x: auto;
+  max-width: 100%;
+}
