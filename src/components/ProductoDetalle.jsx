@@ -75,13 +75,16 @@ function ProductoDetalle() {
   return (
     <>
       <Helmet>
-        <title>{producto.name} | Martial Market</title>
-        <meta name="description" content={producto.descriptin?.slice(0, 150)} />
-        <meta property="og:title" content={producto.name} />
+        <title>{`${producto.name} en Moreno | Martial Market`}</title>
+        <meta name="description" content={`Comprá ${producto.name} (${producto.category}) en Martial Market, Moreno Zona Oeste. ${producto.descriptin?.slice(0, 150)}`} />
+        <meta name="keywords" content={`artes marciales, ${producto.name}, ${producto.category}, ${producto?.marca || 'granmarc'}, moreno, zona oeste, ${producto.talle || ''}`} />
+        <meta property="og:title" content={`${producto.name} en Moreno | Martial Market`} />
+        <meta property="og:description" content={`Producto de artes marciales disponible en Moreno, Zona Oeste. ${producto.descriptin?.slice(0, 150)}`} />
         <meta property="og:image" content={producto.images?.[0]} />
         <meta property="og:url" content={`https://martial-market.netlify.app/productos/${id}`} />
         <link rel="canonical" href={`https://martial-market.netlify.app/productos/${id}`} />
       </Helmet>
+
 
       <main>
         <Container className="my-4">
@@ -109,6 +112,9 @@ function ProductoDetalle() {
 
             <Col md={6} className="detalle-info">
               <h2 className="mb-3">{producto.name}</h2>
+              <p className="seo-local" style={{ display: 'none' }}>
+                {producto.name} original de {producto?.marca || 'Granmarc'}, disponible en nuestra tienda online ubicada en Moreno, Zona Oeste. Especial para practicantes de artes marciales como Taekwon-Do, Karate, MMA, y más.
+              </p>
 
               {producto.category && (
                 <p className="text-secondary fw-semibold">
@@ -123,10 +129,10 @@ function ProductoDetalle() {
                   <Form.Group controlId="selectTalle" className="mb-3">
                     <Form.Label>Talle:</Form.Label>
                     <Form.Select value={talleSeleccionado} onChange={(e) => {
-                        const t = e.target.value;
-                        setTalleSeleccionado(t);
-                        setPrecioTalle(producto.prices[t]);
-                      }}>
+                      const t = e.target.value;
+                      setTalleSeleccionado(t);
+                      setPrecioTalle(producto.prices[t]);
+                    }}>
                       {Object.keys(producto.prices).map((t) => (
                         <option key={t} value={t}>Talle {t}</option>
                       ))}
