@@ -1,3 +1,4 @@
+
 import React from "react";
 
 import { useState, useEffect } from "react";
@@ -24,6 +25,8 @@ import {
 import { db } from "../services/firebaseConfig";
 import "../styles/Admin.css";
 
+
+
 // Formateo de precios
 const formatearMiles = (valor) => {
     if (valor === null || valor === undefined) return "";
@@ -49,11 +52,10 @@ function FormularioProducto({ onProductoAgregado }) {
         descriptin: "",
         price: "",
         images: "",
-        category: "", // ✅ NUEVO
+        category: "",
     });
 
     const [talles, setTalles] = useState([]);
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name === "price") {
@@ -106,7 +108,7 @@ function FormularioProducto({ onProductoAgregado }) {
                 price: objetoPrices ? null : precioUnicoLimpio,
                 prices: objetoPrices,
                 images: imagenesArray,
-                category: producto.category || null, // ✅ SE GUARDA
+                category: producto.category || null,
             });
 
             alert("Producto agregado exitosamente");
@@ -116,7 +118,7 @@ function FormularioProducto({ onProductoAgregado }) {
                 descriptin: "",
                 price: "",
                 images: "",
-                category: "", // ✅ resetear también
+                category: "",
             });
             setTalles([]);
             if (onProductoAgregado) onProductoAgregado();
@@ -151,7 +153,7 @@ function FormularioProducto({ onProductoAgregado }) {
                         />
                     </Col>
 
-                    {/* ✅ Select de categoría */}
+                    {/* Select de categoría */}
                     <Col md={6}>
                         <Form.Select
                             name="category"
@@ -249,7 +251,7 @@ export default function Admin() {
     const [editandoId, setEditandoId] = useState(null);
     const [productoEditando, setProductoEditando] = useState(null);
     const [tallesEditando, setTallesEditando] = useState([]);
-
+    const [filtroNombre, setFiltroNombre] = useState("");
     // Traer productos de Firebase
     const fetchProductos = async () => {
         try {
@@ -371,11 +373,18 @@ export default function Admin() {
         }
     };
 
-    const totalPaginas = Math.ceil(productos.length / productosPorPagina);
-    const productosMostrados = productos.slice(
+    /* const totalPaginas = Math.ceil(productos.length / productosPorPagina); */
+    const productosFiltrados = productos.filter((p) =>
+        p.name.toLowerCase().includes(filtroNombre.toLowerCase())
+    );
+
+    const totalPaginas = Math.ceil(productosFiltrados.length / productosPorPagina);
+
+    const productosMostrados = productosFiltrados.slice(
         (paginaActual - 1) * productosPorPagina,
         paginaActual * productosPorPagina
     );
+
 
     return (
         <Container className="my-5">
@@ -389,6 +398,14 @@ export default function Admin() {
                 <Alert variant="info">No hay productos cargados.</Alert>
             ) : (
                 <>
+                    <Form.Control
+                        type="text"
+                        placeholder="Filtrar por nombre"
+                        value={filtroNombre}
+                        onChange={(e) => setFiltroNombre(e.target.value)}
+                        className="mb-3"
+                    />
+
                     {productosMostrados.map((producto) => {
                         const esEditando = editandoId === producto.id;
 
