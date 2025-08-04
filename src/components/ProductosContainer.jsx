@@ -138,17 +138,36 @@ function ProductosContainer() {
                         </ul>
 
                         {/* Paginación */}
-                        <Pagination className="justify-content-center mt-3 pb-4">
-                            {Array.from({ length: totalPaginas }, (_, i) => (
-                                <Pagination.Item
-                                    key={i}
-                                    active={paginaActual === i + 1}
-                                    onClick={() => setPaginaActual(i + 1)}
-                                >
-                                    {i + 1}
-                                </Pagination.Item>
-                            ))}
+                        <Pagination className="justify-content-center mt-3 pb-4 flex-wrap">
+                            {/* Anterior */}
+                            {paginaActual > 1 && (
+                                <Pagination.Prev onClick={() => setPaginaActual(paginaActual - 1)} />
+                            )}
+
+                            {/* Números de página con lógica de ventana */}
+                            {Array.from({ length: totalPaginas }, (_, i) => i + 1)
+                                .filter((num) => {
+                                    if (totalPaginas <= 5) return true;
+                                    if (paginaActual <= 3) return num <= 5;
+                                    if (paginaActual >= totalPaginas - 2) return num >= totalPaginas - 4;
+                                    return Math.abs(paginaActual - num) <= 2;
+                                })
+                                .map((num) => (
+                                    <Pagination.Item
+                                        key={num}
+                                        active={paginaActual === num}
+                                        onClick={() => setPaginaActual(num)}
+                                    >
+                                        {num}
+                                    </Pagination.Item>
+                                ))}
+
+                            {/* Siguiente */}
+                            {paginaActual < totalPaginas && (
+                                <Pagination.Next onClick={() => setPaginaActual(paginaActual + 1)} />
+                            )}
                         </Pagination>
+
                     </>
                 ) : (
                     <p role="alert" aria-live="assertive">
