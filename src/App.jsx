@@ -30,7 +30,7 @@ function App() {
           <Route path="/carrito" element={<Carrito usuarioLogeado={!!user} />} />
           <Route path="/nosotros" element={<About />} />
           <Route path="/contacto" element={<Contacto />} />
-          <Route path="/productos/:id" element={<ProductoDetalle />} />
+          <Route path="/productos/:slug" element={<ProductoDetalle />} />
           <Route path="/admin" element={esAdmin ? <Admin /> : <Navigate to="/login" replace />} />
           <Route path="/perfil" element={user ? <Perfil /> : <Navigate to="/login" replace />} />
           <Route path="*" element={<NotFound />} />

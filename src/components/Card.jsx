@@ -26,7 +26,7 @@ function Card({ producto }) {
 
   return (
     <BCard as="article" className="producto-card text-center">
-      <Link to={`/productos/${producto.id}`} className="mx-auto mt-3">
+    <Link to={`/productos/${producto.slug}`} className="mx-auto mt-3">
         <BCard.Img
           variant="top"
           src={imagenPrincipal}
@@ -43,7 +43,7 @@ function Card({ producto }) {
             ${formatearPrecio(parseFloat(precioMostrar))}
           </BCard.Text>
         </div>
-        <Link to={`/productos/${producto.id}`}>
+        <Link to={`/productos/${producto.slug}`}>
           <Button
             style={{
               backgroundColor: "#2a82da",

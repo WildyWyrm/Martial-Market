@@ -3,12 +3,25 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import { Form, Button, Row, Col, Card, InputGroup } from "react-bootstrap";
 
+// Función para generar slug
+const generarSlug = (texto) => {
+  if (!texto) return "";
+  return texto
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')       // reemplaza espacios por guiones
+    .replace(/[^\w-]+/g, '')    // elimina caracteres no alfanuméricos
+    .replace(/^-+|-+$/g, '');   // quita guiones al inicio y final
+};
+
+// Formatea números con miles (1.000)
 const formatearMiles = (valor) => {
   const limpio = valor.replace(/\D/g, "");
   if (!limpio) return "";
   return limpio.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 
+// Parsear precio a número
 const parsearPrecio = (str) => {
   if (!str) return null;
   const limpio = str.toString().replace(/\./g, "").replace(",", ".");
@@ -22,11 +35,14 @@ export default function FormularioProducto({ onProductoAgregado }) {
     descriptin: "",
     price: "",
     images: "",
-    category: "", // ✅ Nuevo campo categoría
+    category: "",
   });
 
   const [talles, setTalles] = useState([{ talle: "", precio: "" }]);
   const [loading, setLoading] = useState(false);
+
+  // Calculamos slug en tiempo real
+  const slug = generarSlug(producto.name);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,13 +59,8 @@ export default function FormularioProducto({ onProductoAgregado }) {
     setTalles(nuevosTalles);
   };
 
-  const agregarTalle = () => {
-    setTalles([...talles, { talle: "", precio: "" }]);
-  };
-
-  const quitarTalle = (index) => {
-    setTalles(talles.filter((_, i) => i !== index));
-  };
+  const agregarTalle = () => setTalles([...talles, { talle: "", precio: "" }]);
+  const quitarTalle = (index) => setTalles(talles.filter((_, i) => i !== index));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,10 +76,10 @@ export default function FormularioProducto({ onProductoAgregado }) {
 
       const objetoPrices = tallesValidos.length > 0
         ? tallesValidos.reduce((acc, curr) => {
-          const precioLimpio = parseFloat(curr.precio.replace(/\./g, "").replace(",", "."));
-          acc[curr.talle.trim()] = precioLimpio;
-          return acc;
-        }, {})
+            const precioLimpio = parseFloat(curr.precio.replace(/\./g, "").replace(",", "."));
+            acc[curr.talle.trim()] = precioLimpio;
+            return acc;
+          }, {})
         : null;
 
       const precioUnicoLimpio = producto.price
@@ -81,13 +92,16 @@ export default function FormularioProducto({ onProductoAgregado }) {
         .filter((url) => url !== "");
 
       const productoAGuardar = {
-        name: producto.name,
-        descriptin: producto.descriptin,
+        name: producto.name.trim(),
+        descriptin: producto.descriptin.trim(),
         price: objetoPrices ? null : precioUnicoLimpio,
         prices: objetoPrices,
         images: imagenesArray,
-        category: producto.category || "", // ✅ Guardamos categoría
+        category: producto.category || "",
+        slug, // ¡slug generado automáticamente!
       };
+
+      console.log("Producto a guardar:", productoAGuardar);
 
       await addDoc(collection(db, "productos"), productoAGuardar);
 
@@ -116,6 +130,11 @@ export default function FormularioProducto({ onProductoAgregado }) {
               onChange={handleChange}
               required
             />
+            {producto.name && (
+              <Form.Text className="text-muted">
+                Slug generado: <strong>{slug}</strong>
+              </Form.Text>
+            )}
           </Col>
 
           <Col md={6}>
@@ -194,7 +213,12 @@ export default function FormularioProducto({ onProductoAgregado }) {
                   </InputGroup>
                 </Col>
                 <Col md={2}>
-                  <Button variant="danger" size="sm" onClick={() => quitarTalle(index)} style={{ minWidth: "30px" }}>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => quitarTalle(index)}
+                    style={{ minWidth: "30px" }}
+                  >
                     X
                   </Button>
                 </Col>

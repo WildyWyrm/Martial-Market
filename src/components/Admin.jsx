@@ -24,7 +24,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import "../styles/Admin.css";
-
+import { generarSlug } from "../utils";
 
 
 // Formateo de precios
@@ -313,8 +313,13 @@ export default function Admin() {
     };
 
     const handleChangeEdit = (field, value) => {
-        setProductoEditando({ ...productoEditando, [field]: value });
+        setProductoEditando({
+            ...productoEditando,
+            [field]: value,
+            ...(field === "name" ? { slug: generarSlug(value) } : {}),
+        });
     };
+
 
     const handleTalleChangeEdit = (index, field, value) => {
         const nuevosTalles = [...tallesEditando];

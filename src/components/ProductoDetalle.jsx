@@ -4,13 +4,13 @@ import { Container, Row, Col, Button, ButtonGroup, Form } from "react-bootstrap"
 import { CarritoContext } from "../contexts/CarritoContext";
 import { dispararSweetBasico } from "../assets/SweetAlert";
 import { Helmet } from "react-helmet-async";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import "../styles/ProductoDetalle.css";
 
 function ProductoDetalle() {
   const { agregarAlCarrito } = useContext(CarritoContext);
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
 
   const [producto, setProducto] = useState(null);
@@ -24,23 +24,27 @@ function ProductoDetalle() {
   useEffect(() => {
     async function fetchProducto() {
       try {
-        const docRef = doc(db, "productos", id);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
+        const q = query(collection(db, "productos"), where("slug", "==", slug));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const docSnap = querySnapshot.docs[0];
           const data = docSnap.data();
+          data.id = docSnap.id; // Guardamos el ID real del documento
+
           if (data.image && !data.images) {
             data.images = data.image.split(",").map((url) => url.trim());
           }
+
           setProducto(data);
-          if (data.images?.length) {
-            setImagenPrincipal(data.images[0]);
-          }
-          if (data.prices) {
+          if (data.images?.length) setImagenPrincipal(data.images[0]);
+
+          if (data.prices && Object.keys(data.prices).length > 0) {
             const talles = Object.keys(data.prices);
             setTalleSeleccionado(talles[0]);
             setPrecioTalle(data.prices[talles[0]]);
           } else {
-            setPrecioTalle(data.price);
+            setPrecioTalle(data.price || 0);
           }
         } else {
           setError("Producto no encontrado.");
@@ -53,7 +57,7 @@ function ProductoDetalle() {
       }
     }
     fetchProducto();
-  }, [id]);
+  }, [slug]);
 
   if (cargando) return <p>Cargando producto...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
@@ -63,7 +67,6 @@ function ProductoDetalle() {
     if (cantidad < 1) return;
     const productoParaAgregar = {
       ...producto,
-      id,
       cantidad,
       price: precioTalle,
       talle: talleSeleccionado || "Único",
@@ -76,15 +79,23 @@ function ProductoDetalle() {
     <>
       <Helmet>
         <title>{`${producto.name} en Moreno | Martial Market`}</title>
-        <meta name="description" content={`Comprá ${producto.name} (${producto.category}) en Martial Market, Moreno Zona Oeste. ${producto.descriptin?.slice(0, 150)}`} />
-        <meta name="keywords" content={`artes marciales, ${producto.name}, ${producto.category}, ${producto?.marca || 'granmarc'}, moreno, zona oeste, ${producto.talle || ''}`} />
+        <meta
+          name="description"
+          content={`Comprá ${producto.name} (${producto.category}) en Martial Market, Moreno Zona Oeste. ${producto.descriptin?.slice(0, 150)}`}
+        />
+        <meta
+          name="keywords"
+          content={`artes marciales, ${producto.name}, ${producto.category}, ${producto?.marca || "granmarc"}, moreno, zona oeste, ${producto.talle || ""}`}
+        />
         <meta property="og:title" content={`${producto.name} en Moreno | Martial Market`} />
-        <meta property="og:description" content={`Producto de artes marciales disponible en Moreno, Zona Oeste. ${producto.descriptin?.slice(0, 150)}`} />
+        <meta
+          property="og:description"
+          content={`Producto de artes marciales disponible en Moreno, Zona Oeste. ${producto.descriptin?.slice(0, 150)}`}
+        />
         <meta property="og:image" content={producto.images?.[0]} />
-        <meta property="og:url" content={`https://martial-market.netlify.app/productos/${id}`} />
-        <link rel="canonical" href={`https://martial-market.netlify.app/productos/${id}`} />
+        <meta property="og:url" content={`https://martial-market.netlify.app/productos/${slug}`} />
+        <link rel="canonical" href={`https://martial-market.netlify.app/productos/${slug}`} />
       </Helmet>
-
 
       <main>
         <Container className="my-4">
@@ -112,47 +123,50 @@ function ProductoDetalle() {
 
             <Col md={6} className="detalle-info">
               <h2 className="mb-3">{producto.name}</h2>
-              <p className="seo-local" style={{ display: 'none' }}>
-                {producto.name} original de {producto?.marca || 'Granmarc'}, disponible en nuestra tienda online ubicada en Moreno, Zona Oeste. Especial para practicantes de artes marciales como Taekwon-Do, Karate, MMA, y más.
+              <p className="seo-local" style={{ display: "none" }}>
+                {producto.name} original de {producto?.marca || "Granmarc"}, disponible en nuestra tienda online ubicada en
+                Moreno, Zona Oeste. Especial para practicantes de artes marciales como Taekwon-Do, Karate, MMA, y más.
               </p>
 
-              {producto.category && (
-                <p className="text-secondary fw-semibold">
-                  Categoría: {producto.category}
-                </p>
-              )}
-
+              {producto.category && <p className="text-secondary fw-semibold">Categoría: {producto.category}</p>}
               <p className="text-muted">{producto.descriptin}</p>
 
-              {producto.prices ? (
+              {producto.prices && Object.keys(producto.prices).length > 0 ? (
                 <>
                   <Form.Group controlId="selectTalle" className="mb-3">
                     <Form.Label>Talle:</Form.Label>
-                    <Form.Select value={talleSeleccionado} onChange={(e) => {
-                      const t = e.target.value;
-                      setTalleSeleccionado(t);
-                      setPrecioTalle(producto.prices[t]);
-                    }}>
+                    <Form.Select
+                      value={talleSeleccionado}
+                      onChange={(e) => {
+                        const t = e.target.value;
+                        setTalleSeleccionado(t);
+                        setPrecioTalle(producto.prices[t]);
+                      }}
+                    >
                       {Object.keys(producto.prices).map((t) => (
-                        <option key={t} value={t}>Talle {t}</option>
+                        <option key={t} value={t}>
+                          Talle {t}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
-                  <h5 className="text-success fw-bold">
-                    ${Number(precioTalle).toLocaleString("es-AR")}
-                  </h5>
+                  <h5 className="text-success fw-bold">${Number(precioTalle).toLocaleString("es-AR")}</h5>
                 </>
               ) : (
-                <h5 className="text-success fw-bold">
-                  ${Number(producto.price).toLocaleString("es-AR")}
-                </h5>
+                <h5 className="text-success fw-bold">${Number(producto.price).toLocaleString("es-AR")}</h5>
               )}
 
               <div className="my-3 d-flex justify-content-center">
                 <ButtonGroup>
-                  <Button variant="secondary" onClick={() => cantidad > 1 && setCantidad(cantidad - 1)}>-</Button>
-                  <Button variant="light" disabled>{cantidad}</Button>
-                  <Button variant="secondary" onClick={() => setCantidad(cantidad + 1)}>+</Button>
+                  <Button variant="secondary" onClick={() => cantidad > 1 && setCantidad(cantidad - 1)}>
+                    -
+                  </Button>
+                  <Button variant="light" disabled>
+                    {cantidad}
+                  </Button>
+                  <Button variant="secondary" onClick={() => setCantidad(cantidad + 1)}>
+                    +
+                  </Button>
                 </ButtonGroup>
               </div>
 
