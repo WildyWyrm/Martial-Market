@@ -8,11 +8,6 @@ Permite a los usuarios navegar productos, agregarlos al carrito, y a los adminis
 admin@martialmarket.com
 admin1234
 
-#### API de Firebase key:
-
-apiKey: "AIzaSyBD3NchEw-qJcMFQeIpO2EkMri0ul3pHgE",
-
-
 
 ##### Para actualizar slugs:
 
