@@ -8,5 +8,12 @@ Permite a los usuarios navegar productos, agregarlos al carrito, y a los adminis
 admin@martialmarket.com
 admin1234
 
+#### API de Firebase key:
 
-https://mockapi.io/projects/682a8de1ab2b5004cb37021a
+apiKey: "AIzaSyBD3NchEw-qJcMFQeIpO2EkMri0ul3pHgE",
+
+
+
+##### Para actualizar slugs:
+
+Abrir la terminal en la carpeta donde esté el archivo (ejemplo E:\MartialMarket\ y ejecutar este comando: "node agregarSlug.js" . Eso hace actualizar los IDs cripticos que se generaran en el panel de admin al agregar un producto nuevo a un Slug amigable para mejorar el SEO.

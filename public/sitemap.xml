@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+    <!-- Páginas principales -->
     <url>
         <loc>https://martial-market.netlify.app/</loc>
         <changefreq>weekly</changefreq>
@@ -25,49 +26,48 @@
         <priority>0.6</priority>
     </url>
 
-    <!-- Productos -->
-    <url><loc>https://martial-market.netlify.app/productos/0hGaY1XFYAcQ4mLvkU7S</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/1ApkEbj1DFscd1cxEPiN</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/5pIsiQ98uhu6tEGRQUME</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/5sSN9X8CkjXbCW8rBizc</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/5xoJ5QfGvA7ETGfKQW9f</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/79k0nn7Xwfn6qBbTc7lp</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/7OUWT5Tzs2SHISXhHdg8</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/83tkXjbI8oXL0F7BuJDm</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/8BTXrY8o32AWiu2TBT5K</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/8GsZgXzDinbgfeEPKJhW</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/8caItEcA6r5R4DxiDE5U</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/8pFw73X3b0B0gUrqpNZJ</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/8sJkuDiC6a15jKaVza7K</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/93jXUu08SIuSUsNv09uk</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/9bdaQcZz4WoASbdFEYCZ</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/AyqgN1Cprv3aL880rlcq</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/BDxqd2yGh9i8z2U0HCnH</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/BJlDemy3wymeEdZLVh2Y</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/CbJPK5BnP5soIWKhiiAB</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/CuHXltGafdg0a700UfBx</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/DDzegTby9ncU5wT61FX8</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/G46h5a2n6QsYWfniA6uX</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/HIk82b9TILFbzbK59n3v</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/IjTmCcFEkfUb7aZnNF8U</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/JKJ3arLWy5AhMoqtfYPZ</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/Jt8TRJNza2w8SM9Ehpna</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/JvIqV4V770fCNgzS6wjJ</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/KEhoTFBZR8OH3EsmC0cN</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/KkVjy6rxbj8HG8CKRCHK</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/MNvqEmzA6a3gVZJxD2Yg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/MsiUawzjLs5IMW2jBNjd</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/N8qkjsl4CBOTwDku5HBj</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/NSwNFXbcp4Mpi7RV4mPi</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/NYo8HUzjuXNXkhXs9a05</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/NuaJDzyD0F7DXD34VAUC</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/NznxlHJKLD9AxASnCzgA</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/ODug0wbXmvnUvlnIesVy</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/Ok3hF67NIseknafVuQwe</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/PeYnCh8XAnZ8XJxL0Psh</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/Ph2PKVa1QyV9kqQFwCt8</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/PuxA6UnWY6aIKVgea8M9</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/Qt77UTP4GuFOsBIHtObs</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://martial-market.netlify.app/productos/THIV6cScztCjl3uUz8cM</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <!-- Productos con slug -->
+    <url><loc>https://martial-market.netlify.app/productos/guantes-sparring-granmarc</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/kakemono</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/kimono-karategi-granmarc</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/m-scara-acr-lica-para-cabezal-gladiador</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/mate-granmarc</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/mochila-granmarc</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/pack-de-ribetes-4to-dan-no-incluye-colocaci-n</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/pack-de-ribetes-dan-no-incluye-colocaci-n</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/palmeta-de-sparring-doble</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/palmeta-de-sparring-simple</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/pantalon-invictus-kick</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/pao</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/par-de-puntas-granmarc</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/pechera-femenina-de-algod-n-top-blanca</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/pechera-reversible-roja-azul</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/piso-de-goma-encastrable-reversible-1x1mts-23mm</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/piso-de-goma-encastrable-reversible-1x1mts-45mm</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/protector-antebrazo-codera-granmarc</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/protector-bucal-transparente-doble</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/protector-bucal-transparente-simple</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/protector-inguinal-femenino-talle-1-al-3</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/protector-inguinal-masculino-talle-1-al-4</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/reja-met-lica-para-cabezal-cerrado</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/remera-de-algod-n-manga-corta</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/remera-de-dry-fit-manga-corta</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/short-de-muay-tai-bordado</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/short-de-taekwondo</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/tabla-simulador-de-rotura-1-2-pulgada</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/tabla-simulador-de-rotura-1-pulgada</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/termo-1-2-litro</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/termo-1-litro-granmarc</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/tibiales-low-kick-negro</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/tibiales-profesionales-negro</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/tibiales-sparring-con-empeine-rojo</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/tibiales-sparring-rojo</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/venda-cruda-5-cm</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/venda-cruda-7-cm</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/venda-de-color</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/zapatos-gladiador-negro</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/zapatos-invictus-rojo-azul</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/zapatos-profesionales-rojo-azul</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://martial-market.netlify.app/productos/zapatos-sparring-rojo-azul</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
 </urlset>
